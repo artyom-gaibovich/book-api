@@ -1,11 +1,13 @@
-import { injectable } from 'inversify';
+import {inject, injectable} from 'inversify';
 import { Client, Pool } from 'pg';
+import {TYPES} from "../types";
+import {ConfigService} from "../config/config.service";
 
 @injectable()
 export class DatabaseService {
     private pool: Pool;
 
-    constructor() {
+    constructor(@inject(TYPES.ConfigService) private readonly configService: ConfigService) {
         this.init();
     }
 
@@ -18,6 +20,8 @@ export class DatabaseService {
             database: 'root'
         });
     }
+
+
 
     async query(query: string, params: any[] = []): Promise<any> {
         const client = await this.pool.connect();

@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import { UserModel } from '@prisma/client';
 import { Container } from 'inversify';
 import { IConfigService } from '../config/config.service.interface';
 import { TYPES } from '../types';
@@ -7,6 +6,7 @@ import { User } from './user.entity';
 import { IUsersRepository } from './users.repository.interface';
 import { UserService } from './users.service';
 import { IUserService } from './users.service.interface';
+import {UserModel} from "./users.repository";
 
 const ConfigServiceMock: IConfigService = {
 	get: jest.fn(),

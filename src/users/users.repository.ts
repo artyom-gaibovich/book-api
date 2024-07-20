@@ -3,13 +3,9 @@ import { TYPES } from '../types';
 import { User } from './user.entity';
 import { IUsersRepository } from './users.repository.interface';
 import { DatabaseService } from "../database/database.service";
+import {UserModel} from "../database/model/user.model";
 
-export interface UserModel {
-	id: number;
-	email: string;
-	password: string;
-	name: string;
-}
+
 
 @injectable()
 export class UsersRepository implements IUsersRepository {
@@ -21,7 +17,7 @@ export class UsersRepository implements IUsersRepository {
 		if (result.length === 0) {
 			throw new Error('User creation failed');
 		}
-		const user = result[0]; // Первый и единственный элемент в массиве
+		const user = result[0];
 		return user as UserModel;
 	}
 
@@ -29,9 +25,9 @@ export class UsersRepository implements IUsersRepository {
 		const query = 'SELECT * FROM UserModel WHERE email = $1;';
 		const result = await this.databaseService.query(query, [email]);
 		if (result.length === 0) {
-			return null; // Нет пользователя с таким email
+			return null;
 		}
-		const user = result[0]; // Первый элемент в массиве
+		const user = result[0];
 		return user as UserModel;
 	}
 }
