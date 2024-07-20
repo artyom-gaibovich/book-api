@@ -9,6 +9,7 @@ import { IUserService } from './users.service.interface';
 import {UserModel} from "../database/model/user.model";
 import {RolesRepositoryInterface} from "../roles/roles.repository.interface";
 import {TypesRoles} from "../roles/role.interface";
+import {UserToRolesInterface, UserToToRoles} from "../roles/user-to-roles.interface";
 
 @injectable()
 export class UserService implements IUserService {
@@ -38,6 +39,14 @@ export class UserService implements IUserService {
 		return newUser.comparePassword(password);
 	}
 
+	async findRoles(userId: number) : Promise<TypesRoles[] | void>{
+		const result = await this.rolesRepository.findByUserId(userId)
+		console.log(result?.roles)
+		if (!result) {
+			return;
+		}
+		return result.roles;
+	}
 	async getUserInfo(email: string): Promise<UserModel | null> {
 		return this.usersRepository.find(email);
 	}
