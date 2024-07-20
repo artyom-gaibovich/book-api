@@ -1,18 +1,20 @@
 import {inject, injectable} from 'inversify';
 import {BaseController} from '../common/base.controller';
-import {ILogger} from '../logger/logger.interface';
+import {LoggerInterface} from '../logger/logger.interface';
 import {TYPES} from '../types';
 import 'reflect-metadata';
-import {IConfigService} from '../config/config.service.interface';
+import {ConfigServiceInterface} from '../config/config.service.interface';
 import {BookControllerInterface} from "./book.controller.interface";
-import { NextFunction, Request, Response } from 'express';
+import {NextFunction, Request, Response} from 'express';
 import {CreateBookDto} from "./dto/create-book.dto";
+import {BookServiceInterface} from "./book.service.interface";
 
 @injectable()
 export class BookController extends BaseController implements BookControllerInterface {
     constructor(
-        @inject(TYPES.ILogger) private loggerService: ILogger,
-        @inject(TYPES.ConfigService) private configService: IConfigService,
+        @inject(TYPES.ILogger) private loggerService: LoggerInterface,
+        @inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
+        @inject(TYPES.BookService) private bookService: BookServiceInterface,
     ) {
         super(loggerService);
         this.bindRoutes([
@@ -61,9 +63,11 @@ export class BookController extends BaseController implements BookControllerInte
     }
 
     async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+        return await this.bookService.findAll()
     }
 
     async findById(req: Request, res: Response, next: NextFunction): Promise<void> {
+
     }
 
     async update(req: Request, res: Response, next: NextFunction): Promise<void> {
