@@ -34,20 +34,4 @@ export class UsersRepository implements UsersRepositoryInterface {
 	}
 
 
-	async patchRoles(userId : number, newRoles: TypesRoles[]) {
-		await this.databaseService.query('BEGIN');
-
-		try {
-			await this.databaseService.query('DELETE FROM user_roles WHERE user_id = $1', [userId]);
-
-			for (const newRole of newRoles) {
-				await this.databaseService.query('INSERT INTO user_roles (user_id, role_value) VALUES ($1, $2)', [userId, newRole]);
-			}
-
-			await this.databaseService.query('COMMIT');
-		} catch (error) {
-			await this.databaseService.query('ROLLBACK');
-			throw error;
-		}
-	}
 }

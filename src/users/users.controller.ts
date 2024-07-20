@@ -14,6 +14,8 @@ import { IConfigService } from '../config/config.service.interface';
 import { IUserService } from './users.service.interface';
 import { AuthGuard } from '../common/auth.guard';
 import {UpdateRolesDto} from "./dto/update-roles.dto";
+import {TransformerMiddleware} from "../common/transformer.middleware";
+import {TypesRoles} from "../roles/role.interface";
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
@@ -40,7 +42,7 @@ export class UserController extends BaseController implements IUserController {
 				path: '/update-roles',
 				method: 'post',
 				func: this.updateRoles,
-				middlewares: [new AuthGuard()],
+				middlewares: [new ValidateMiddleware(UpdateRolesDto), new AuthGuard()],
 			},
 			{
 				path: '/info',
@@ -76,16 +78,16 @@ export class UserController extends BaseController implements IUserController {
 		this.ok(res, { email: result.email, id: result.id });
 	}
 
-	async info({ user }: Request, res: Response, next: NextFunction): Promise<void> {
+	async info({ user }: Request<{}, {}, {}>, res: Response, next: NextFunction): Promise<void> {
 
 		const userInfo = await this.userService.getUserInfo(user);
 		this.ok(res, { email: userInfo?.email, id: userInfo?.id });
 	}
 
 	async updateRoles(req : Request<{}, {}, UpdateRolesDto>, res: Response, next: NextFunction) {
-		const userRoles = await this.userService.updateRoles(req.body.userId, req.body.roles)
-		console.log('userRoles', userRoles);
-		this.ok(res, JSON.stringify(userRoles))
+		const transformRoles = Array.from<TypesRoles>(new Set(req.body.roles))
+		const userRoles = await this.userService.updateRoles(req.body.userId, transformRoles)
+		this.ok(res, userRoles)
 	}
 
 

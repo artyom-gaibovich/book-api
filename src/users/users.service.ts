@@ -43,6 +43,8 @@ export class UserService implements IUserService {
 	}
 
 	async updateRoles(userId: number, newRoles: TypesRoles[]) {
-		return this.rolesRepository.patchByUserId(userId, newRoles)
+		await this.rolesRepository.deleteByUserId(userId)
+		await this.rolesRepository.create(userId, newRoles)
+		return this.rolesRepository.findByUserId(userId)
 	}
 }
