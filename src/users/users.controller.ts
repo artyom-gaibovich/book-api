@@ -16,6 +16,7 @@ import { AuthGuard } from '../common/auth.guard';
 import {UpdateRolesDto} from "./dto/update-roles.dto";
 import {TransformerMiddleware} from "../common/transformer.middleware";
 import {TypesRoles} from "../roles/role.interface";
+import {UserModel} from "../database/model/user.model";
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
@@ -62,7 +63,10 @@ export class UserController extends BaseController implements IUserController {
 		if (!result) {
 			return next(new HTTPError(401, 'error authorization', 'login'));
 		}
-		const jwt = await this.signJWT(req.body.email, this.configService.get('SECRET'));
+		const user = await this.userService.getUserInfo(req.body.email) as UserModel
+		const userRoles = await this.userService.findRoles(user.id) as TypesRoles[]
+		const jwt = await this.signJWT(userRoles, req.body.email, this.configService.get('SECRET'));
+		console.log(userRoles, jwt)
 		this.ok(res, { jwt });
 	}
 
@@ -91,10 +95,11 @@ export class UserController extends BaseController implements IUserController {
 	}
 
 
-	private signJWT(email: string, secret: string): Promise<string> {
+	private signJWT(roles: TypesRoles[], email: string, secret: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			sign(
 				{
+					roles : roles,
 					email,
 					iat: Math.floor(Date.now() / 1000),
 				},
