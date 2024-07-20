@@ -4,7 +4,7 @@ import {Transform} from "class-transformer";
 
 export class UpdateRolesDto {
     @IsNotEmpty({ message: 'User ID is required.' })
-    @IsNumber({}, { message: 'ID - is a only number.' })
+    @IsNumber({}, { message: 'ID is a only number.' })
     userId: number;
 
 

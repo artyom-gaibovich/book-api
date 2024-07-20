@@ -44,7 +44,7 @@ export class UserController extends BaseController implements IUserController {
 				path: '/update-roles',
 				method: 'post',
 				func: this.updateRoles,
-				middlewares: [new ValidateMiddleware(UpdateRolesDto), new AuthGuard()],
+				middlewares: [new ValidateMiddleware(UpdateRolesDto), new AuthAdminGuard()],
 			},
 			{
 				path: '/info',
