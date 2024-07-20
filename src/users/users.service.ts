@@ -4,15 +4,18 @@ import { TYPES } from '../types';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { User } from './user.entity';
-import { IUsersRepository } from './users.repository.interface';
+import { UsersRepositoryInterface } from './users.repository.interface';
 import { IUserService } from './users.service.interface';
-import {UserModel} from "./users.repository";
+import {UserModel} from "../database/model/user.model";
+import {RolesRepositoryInterface} from "../roles/roles.repository.interface";
+import {TypesRoles} from "../roles/role.interface";
 
 @injectable()
 export class UserService implements IUserService {
 	constructor(
 		@inject(TYPES.ConfigService) private configService: IConfigService,
-		@inject(TYPES.UsersRepository) private usersRepository: IUsersRepository,
+		@inject(TYPES.UsersRepository) private usersRepository: UsersRepositoryInterface,
+		@inject(TYPES.RolesRepository) private rolesRepository: RolesRepositoryInterface,
 	) {}
 
 	async createUser({ email, name, password }: UserRegisterDto): Promise<UserModel | null> {
@@ -37,5 +40,9 @@ export class UserService implements IUserService {
 
 	async getUserInfo(email: string): Promise<UserModel | null> {
 		return this.usersRepository.find(email);
+	}
+
+	async updateRoles(userId: number, newRoles: TypesRoles[]) {
+		return this.rolesRepository.patchByUserId(userId, newRoles)
 	}
 }
