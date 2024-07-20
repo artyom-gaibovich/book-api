@@ -19,32 +19,32 @@ export class BookController extends BaseController implements BookControllerInte
         super(loggerService);
         this.bindRoutes([
             {
-                path: '/books',
+                path: '',
                 method: 'post',
                 func: this.create,
                 middlewares: [],
             },
             {
-                path: '/books',
+                path: '',
                 method: 'get',
-                func: this.create,
+                func: this.findAll,
                 middlewares: [],
             },
 
             {
-                path: '/books/:id',
+                path: '/:id',
                 method: 'get',
                 func: this.create,
                 middlewares: [],
             },
             {
-                path: '/books/:id',
+                path: ':id',
                 method: 'put',
                 func: this.create,
                 middlewares: [],
             },
             {
-                path: '/books/:id',
+                path: ':id',
                 method: 'delete',
                 func: this.create,
                 middlewares: [],
@@ -63,7 +63,9 @@ export class BookController extends BaseController implements BookControllerInte
     }
 
     async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
-        return await this.bookService.findAll()
+        console.log(req)
+        const result = await this.bookService.findAll()
+        this.ok(res, {result});
     }
 
     async findById(req: Request, res: Response, next: NextFunction): Promise<void> {

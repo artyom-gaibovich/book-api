@@ -1,10 +1,10 @@
 import {Container, ContainerModule, interfaces} from 'inversify';
 import {App} from './app';
 import {ConfigService} from './config/config.service';
-import {IConfigService} from './config/config.service.interface';
+import {ConfigServiceInterface} from './config/config.service.interface';
 import {ExceptionFilter} from './errors/exception.filter';
-import {IExeptionFilter} from './errors/exception.filter.interface';
-import {ILogger} from './logger/logger.interface';
+import {ExceptionFilterInterface} from './errors/exception.filter.interface';
+import {LoggerInterface} from './logger/logger.interface';
 import {LoggerService} from './logger/logger.service';
 import {TYPES} from './types';
 import {UserController} from './users/users.controller';
@@ -30,15 +30,15 @@ export interface IBootstrapReturn {
 }
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
-	bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope();
-	bind<IExeptionFilter>(TYPES.ExeptionFilter).to(ExceptionFilter);
+	bind<LoggerInterface>(TYPES.ILogger).to(LoggerService).inSingletonScope();
+	bind<ExceptionFilterInterface>(TYPES.ExeptionFilter).to(ExceptionFilter);
 
 
 	bind<UsersRepositoryInterface>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
 	bind<UsersControllerInterface>(TYPES.UserController).to(UserController);
 	bind<UsersServiceInterface>(TYPES.UserService).to(UserService);
 
-	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
+	bind<ConfigServiceInterface>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 
 
 	bind<BookRepositoryInterface>(TYPES.BookRepository).to(BookRepository).inSingletonScope();

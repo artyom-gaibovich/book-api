@@ -21,6 +21,7 @@ export class App {
 		@inject(TYPES.ILogger) private logger: LoggerInterface,
 		@inject(TYPES.DatabaseService) private database: PgPoolService,
 		@inject(TYPES.UserController) private userController: UserController,
+		@inject(TYPES.BookController) private bookController: UserController,
 		@inject(TYPES.ExeptionFilter) private exceptionFilter: ExceptionFilterInterface,
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 	) {
@@ -36,6 +37,7 @@ export class App {
 
 	useRoutes(): void {
 		this.app.use('/users', this.userController.router);
+		this.app.use('/books', this.bookController.router);
 	}
 
 	useExceptionFilters(): void {

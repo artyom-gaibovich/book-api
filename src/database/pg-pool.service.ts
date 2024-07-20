@@ -1,9 +1,7 @@
 import {inject, injectable} from 'inversify';
-import { Client, Pool } from 'pg';
+import {Pool} from 'pg';
 import {TYPES} from "../types";
-import {ConfigService} from "../config/config.service";
-import {IConfigService} from "../config/config.service.interface";
-import {ILogger} from "../logger/logger.interface";
+import {LoggerInterface} from "../logger/logger.interface";
 import {DatabaseConfig} from "./database.config";
 
 @injectable()
@@ -11,7 +9,7 @@ export class PgPoolService {
     private client: Pool;
 
     constructor(
-        @inject(TYPES.ILogger) private logger: ILogger,
+        @inject(TYPES.ILogger) private logger: LoggerInterface,
         @inject(TYPES.DatabaseConfig) private databaseConfig: DatabaseConfig
     ) {
         this.client = new Pool(this.databaseConfig.getPoolConfig())
