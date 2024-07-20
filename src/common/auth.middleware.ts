@@ -20,3 +20,29 @@ export class AuthMiddleware implements IMiddleware {
 		}
 	}
 }
+
+
+export class AuthAdminMiddleware implements IMiddleware {
+
+	constructor(private secret: string) {}
+
+
+	execute(req: Request, res: Response, next: NextFunction): void {
+		if (req.headers.authorization) {
+			verify(req.headers.authorization.split(' ')[1], this.secret, (err, payload) => {
+				if (err) {
+					next();
+				} else if (payload) {
+					req.user = payload.email;
+					req.roles = payload.roles.map((role : any) => role.role_value);
+					next();
+				}
+			});
+
+
+		} else {
+			next();
+		}
+	}
+
+}

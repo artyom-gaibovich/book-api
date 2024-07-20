@@ -8,7 +8,7 @@ import 'reflect-metadata';
 import { IConfigService } from './config/config.service.interface';
 import { IExeptionFilter } from './errors/exeption.filter.interface';
 import { UserController } from './users/users.controller';
-import { AuthMiddleware } from './common/auth.middleware';
+import {AuthAdminMiddleware, AuthMiddleware} from './common/auth.middleware';
 import {PgPoolService} from "./database/pg-pool.service";
 
 @injectable()
@@ -30,7 +30,7 @@ export class App {
 
 	useMiddleware(): void {
 		this.app.use(json());
-		const authMiddleware = new AuthMiddleware(this.configService.get('SECRET'));
+		const authMiddleware = new AuthAdminMiddleware(this.configService.get('SECRET'));
 		this.app.use(authMiddleware.execute.bind(authMiddleware));
 	}
 
@@ -47,7 +47,7 @@ export class App {
 		this.useRoutes();
 		this.useExeptionFilters();
 		this.server = this.app.listen(this.port);
-		this.logger.log(`Сервер запущен на http://localhost:${this.port}`);
+		this.logger.log(`Server start on http://localhost:${this.port}`);
 		this.database.connect()
 	}
 
