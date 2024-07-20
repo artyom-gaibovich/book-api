@@ -34,17 +34,17 @@ export class BookController extends BaseController implements BookControllerInte
             {
                 path: '/:id',
                 method: 'get',
-                func: this.create,
+                func: this.findById,
                 middlewares: [],
             },
             {
-                path: ':id',
+                path: '/:id',
                 method: 'put',
                 func: this.create,
                 middlewares: [],
             },
             {
-                path: ':id',
+                path: '/:id',
                 method: 'delete',
                 func: this.create,
                 middlewares: [],
@@ -69,7 +69,9 @@ export class BookController extends BaseController implements BookControllerInte
     }
 
     async findById(req: Request, res: Response, next: NextFunction): Promise<void> {
-
+        const {id} = req.params;
+        console.log(req.params)
+        this.ok(res,{id : id});
     }
 
     async update(req: Request, res: Response, next: NextFunction): Promise<void> {
