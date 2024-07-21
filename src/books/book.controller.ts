@@ -9,6 +9,10 @@ import {NextFunction, Request, Response} from 'express';
 import {CreateBookDto} from "./dto/create-book.dto";
 import {BookServiceInterface} from "./book.service.interface";
 
+interface ReqParams {
+    id : number;
+}
+
 @injectable()
 export class BookController extends BaseController implements BookControllerInterface {
     constructor(
@@ -60,21 +64,27 @@ export class BookController extends BaseController implements BookControllerInte
     }
 
     async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const {id} = req.params;
+
     }
 
-    async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async findAll(req: Request, res: Response, next: NextFunction): Promise<any> {
         console.log(req)
         const result = await this.bookService.findAll()
         this.ok(res, {result});
     }
 
-    async findById(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async findById(req: Request<any,{},{}>, res: Response, next: NextFunction): Promise<void> {
         const {id} = req.params;
-        console.log(req.params)
-        this.ok(res,{id : id});
+        //While i set any. later i fix it.
+        const result = await this.bookService.findById(id);
+        this.ok(res,{result});
     }
 
     async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const {id} = req.params;
+
+
     }
 
 

@@ -6,7 +6,7 @@ import {BookModel} from "../database/model/book.model";
 export interface BookServiceInterface {
     findAll: () => Promise<BookModel[] | null>;
     create: (dto: CreateBookDto) => Promise<void>;
-    findById: (id: number) => Promise<void>;
+    findById: (id: number) => Promise<BookModel | null>;
     update: (dto: UpdateBookDto) => Promise<void>;
     delete: (id : number) => Promise<void>;
 }

@@ -31,6 +31,10 @@ export class BookService implements BookServiceInterface {
     update: (dto: UpdateBookDto) => Promise<void>;
     delete: (id: number) => Promise<void>;
     async findById(id : number) {
-
+        const result = this.bookRepository.findById(id)
+        if (!result) {
+            return null
+        }
+        return result;
     }
 }
