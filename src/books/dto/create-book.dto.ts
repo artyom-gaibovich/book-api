@@ -20,7 +20,7 @@ export class CreateBookDto {
     @IsArray()
     @IsString({ each: true })
     @IsNotEmpty({ message: 'Genres are required.' })
-    roles: TypesRoles[];
+    genres: string[];
 
 
 }

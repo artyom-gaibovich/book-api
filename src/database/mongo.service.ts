@@ -9,7 +9,6 @@ import {ConfigService} from "../config/config.service";
 @injectable()
 export class MongoService {
     private client: MongoClient;
-    private db: Db;
 
     constructor(
         @inject(TYPES.ILogger) private logger: LoggerInterface,
@@ -22,7 +21,6 @@ export class MongoService {
     async connect(): Promise<void> {
         try {
             await this.client.connect();
-            this.db = this.client.db(this.configService.get('MONGO_DATABASE'));
             this.logger.log('[MongoService] Successfully connected to MongoDB');
         } catch (e) {
             if (e instanceof Error) {
@@ -31,14 +29,22 @@ export class MongoService {
         }
     }
 
+    async query(query: string, params: any[] = []): Promise<any> {
+        try {
+            const res = await this.client;
+            console.log(res)
+            return res;
+        } finally {
+            await this.client.close();
+        }
+    }
+
+    async get() {
+        return this.client;
+    }
     async disconnect(): Promise<void> {
         await this.client.close();
     }
 
-    getDb(): Db {
-        if (!this.db) {
-            throw new Error('Database not initialized');
-        }
-        return this.db;
-    }
+
 }

@@ -1,9 +1,4 @@
-import {NextFunction, Request, Response} from "express";
-import {CreateBookDto} from "./dto/create-book.dto";
-import {UpdateBookDto} from "./dto/update-book.dto";
-import {BookModel} from "./book.model";
 import {BookInterface} from "./book.interface";
-import {GenreModel} from "../genres/genre.model";
 
 export interface BookServiceInterface {
     findAll(): Promise<any | null>;
