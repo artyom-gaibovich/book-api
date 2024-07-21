@@ -7,7 +7,7 @@ import {GenreModel} from "../genres/genre.model";
 
 export interface BookServiceInterface {
     findAll(): Promise<any | null>;
-    //findById(id: number): Promise<BookInterface | null>;
+    findById(id: number): Promise<any | null>;
     //create(book: BookInterface): Promise<BookInterface | null>;
     //delete(id: number): Promise<null>;
     //update(id: number, book: BookInterface): Promise<BookInterface | null>;

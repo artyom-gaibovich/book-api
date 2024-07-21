@@ -25,28 +25,20 @@ export class BookService implements BookServiceInterface {
     ) {}
 
     async findAll(): Promise<any | null>  {
-        const booksWithCategory : any[] = []
-        const booksWithGenres : any[] = []
-
-        const books = await this.bookRepository.findAll();
-        if (!books) {
-            return null;
-        }
-        const genres = await this.genresRepository.findById(1);
-        if (!genres) {
-            return null;
-        }
         return await this.bookGenresRepository.findAll()
 
-            /*bookGenres.map(bookWithGenre => {
-                return {
-                    id: bookWithGenres.id,
-                    title : bookWithGenres.title,
-                    author: bookWithGenres.author,
-                    publicationDate: bookWithGenres.publication_date,
-                    genres : bookWithGenre.
-                }
-            })*/
-        }
+        /*bookGenres.map(bookWithGenre => {
+            return {
+                id: bookWithGenres.id,
+                title : bookWithGenres.title,
+                author: bookWithGenres.author,
+                publicationDate: bookWithGenres.publication_date,
+                genres : bookWithGenre.
+            }
+        })*/
+    }
+    async findById(id:number): Promise<any | null>  {
+        return await this.bookGenresRepository.findByBookId(id)
+    }
 
 }
