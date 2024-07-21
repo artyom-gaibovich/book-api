@@ -9,6 +9,10 @@ import {NextFunction, Request, Response} from 'express';
 import {CreateBookDto} from "./dto/create-book.dto";
 import {BookServiceInterface} from "./book.service.interface";
 import {BookService} from "./book.service";
+import {ValidateMiddleware} from "../common/validate.middleware";
+import {UpdateRolesDto} from "../users/dto/update-roles.dto";
+import {AuthAdminGuard} from "../common/auth.guard";
+import {UpdateBookDto} from "./dto/update-book.dto";
 
 interface ReqParams {
     id : number;
@@ -27,7 +31,7 @@ export class BookController extends BaseController implements BookControllerInte
                 path: '',
                 method: 'post',
                 func: this.create,
-                middlewares: [],
+                middlewares: [new ValidateMiddleware(CreateBookDto), new AuthAdminGuard()],
             },
             {
                 path: '',
@@ -46,13 +50,13 @@ export class BookController extends BaseController implements BookControllerInte
                 path: '/:id',
                 method: 'put',
                 func: this.update,
-                middlewares: [],
+                middlewares: [new ValidateMiddleware(UpdateBookDto), new AuthAdminGuard()],
             },
             {
                 path: '/:id',
                 method: 'delete',
                 func: this.delete,
-                middlewares: [],
+                middlewares: [new AuthAdminGuard()],
             },
 
 
