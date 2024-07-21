@@ -1,43 +1,52 @@
-import {BookModel} from "./book.model";
-import {BookRepositoryInterface} from "./book.repository.interface";
-import {inject, injectable} from "inversify";
-import {TYPES} from "../types";
-import {PgPoolService} from "../database/pg-pool.service";
+// repositories/book.repository.ts
+import { inject, injectable } from 'inversify';
+import { ObjectId } from 'mongodb';
+import { MongoService } from '../database/mongo.service';
+import { TYPES } from '../types';
 
+export interface Genre {
+    title: string;
+}
+
+export interface Book {
+    title: string;
+    author: string;
+    publicationDate: string;
+    genres: Genre[];
+}
 
 @injectable()
-export class BookRepository implements BookRepositoryInterface {
-    constructor(@inject(TYPES.DatabaseService) private databaseService: PgPoolService) {}
+export class BookRepository {
+    constructor(@inject(TYPES.MongoService) private mongoService: MongoService) {}
 
-
-    async findAll(): Promise<BookModel[]> {
-        const query = 'SELECT * FROM books;';
-        const result = await this.databaseService.query(query);
-        return result as BookModel[];
+    async addBook(book: Book): Promise<any> {
+        const db = this.mongoService.getDb();
+        const result = await db.collection('books').insertOne(book);
+        return { ...book, _id: result.insertedId };
     }
 
-    async findById(id: number): Promise<BookModel | null> {
-        const query = 'SELECT * FROM books WHERE id = $1;';
-        const result = await this.databaseService.query(query, [id]);
-        if (result.length === 0) {
-            return null;
-        }
-        const book = result[0];
-        return book as BookModel;
+    async getBooks(): Promise<any[]> {
+        const db = this.mongoService.getDb();
+        return db.collection('books').find({}).toArray();
     }
 
-    async create({ title, author, publicationDate }: { title : string, author : string, publicationDate : string }): Promise<BookModel | null> {
-        const query = 'INSERT INTO books (title, author, publicationDate) VALUES ($1, $2, $3) RETURNING *;';
-        const result = await this.databaseService.query(query, [title, author, publicationDate]);
-        if (result.length === 0) {
-            return null;
-        }
-        const book = result[0];
-        return book as BookModel;
+    async getBookById(id: string): Promise<any | null> {
+        const db = this.mongoService.getDb();
+        return db.collection('books').findOne({ _id: new ObjectId(id) });
     }
 
-    async delete(id: number): Promise<void> {
-        const query = 'DELETE FROM books WHERE id = $1;';
-        await this.databaseService.query(query, [id]);
+    async updateBook(id: string, bookUpdates: Partial<Book>): Promise<any | null> {
+        const db = this.mongoService.getDb();
+        const result = await db.collection('books').findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: bookUpdates },
+            { }
+        );
+        return result?.value;
+    }
+
+    async deleteBook(id: string): Promise<any> {
+        const db = this.mongoService.getDb();
+        await db.collection('books').deleteOne({ _id: new ObjectId(id) });
     }
 }

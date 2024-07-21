@@ -1,35 +1,32 @@
-import {BookServiceInterface} from "./book.service.interface";
-import { CreateBookDto } from "./dto/create-book.dto";
-import { UpdateBookDto } from "./dto/update-book.dto";
-import {inject, injectable} from "inversify";
-import {TYPES} from "../types";
-import {ConfigServiceInterface} from "../config/config.service.interface";
-import {UsersRepositoryInterface} from "../users/users.repository.interface";
-import {RolesRepositoryInterface} from "../roles/roles.repository.interface";
-import {BookRepositoryInterface} from "./book.repository.interface";
-import {BookModel} from "./book.model";
-import {BookInterface} from "./book.interface";
-import {GenresRepositoryInterface} from "../genres/genres.repository.interface";
-import {GenreModel} from "../genres/genre.model";
-import {BookGenresRepositoryInterface} from "../book-genres/book-genres.repository.interface";
-
+// services/book.service.ts
+import { inject, injectable } from 'inversify';
+import { TYPES } from '../types';
+import {Book, BookRepository} from "./book.repository";
 
 @injectable()
-export class BookService implements BookServiceInterface {
-
+export class BookService {
     constructor(
-        @inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
-        @inject(TYPES.BookRepository) private bookRepository: BookRepositoryInterface,
-        @inject(TYPES.GenresRepository) private genresRepository: GenresRepositoryInterface,
-        @inject(TYPES.BookGenresRepository) private bookGenresRepository: BookGenresRepositoryInterface,
+        @inject(TYPES.BookRepository) private bookRepository: BookRepository
     ) {}
 
-    async findAll(): Promise<any | null>  {
-        return await this.bookGenresRepository.findAll()
+    async createBook({ title, author, publicationDate, genres }: Book): Promise<Book | null> {
+        const newBook: Book = { title, author, publicationDate, genres };
+        return this.bookRepository.addBook(newBook);
     }
-    async findById(id:number): Promise<any | null>  {
-        return await this.bookGenresRepository.findByBookId(id)
-    }
-    async create(): P
 
+    async getBooks(): Promise<Book[]> {
+        return this.bookRepository.getBooks();
+    }
+
+    async getBookById(id: string): Promise<Book | null> {
+        return this.bookRepository.getBookById(id);
+    }
+
+    async updateBook(id: string, bookUpdates: Partial<Book>): Promise<Book | null> {
+        return this.bookRepository.updateBook(id, bookUpdates);
+    }
+
+    async deleteBook(id: string): Promise<void> {
+        await this.bookRepository.deleteBook(id);
+    }
 }

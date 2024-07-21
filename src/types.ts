@@ -12,6 +12,8 @@ export const TYPES = {
 	BookGenresRepository: Symbol.for('BookGenresRepository'),
 
 
+	MongoService : Symbol.for('MongoService'),
+
 	ExeptionFilter: Symbol.for('ExeptionFilter'),
 	ConfigService: Symbol.for('ConfigService'),
 	PrismaService: Symbol.for('PrismaService'),
