@@ -1,36 +1,32 @@
-import {BookServiceInterface} from "./book.service.interface";
-import { CreateBookDto } from "./dto/create-book.dto";
-import { UpdateBookDto } from "./dto/update-book.dto";
-import {inject, injectable} from "inversify";
-import {TYPES} from "../types";
-import {ConfigServiceInterface} from "../config/config.service.interface";
-import {UsersRepositoryInterface} from "../users/users.repository.interface";
-import {RolesRepositoryInterface} from "../roles/roles.repository.interface";
-import {BookRepositoryInterface} from "./book.repository.interface";
-import {BookModel} from "../database/model/book.model";
-
+// services/book.service.ts
+import { inject, injectable } from 'inversify';
+import { TYPES } from '../types';
+import {Book, BookRepository} from "./book.repository";
 
 @injectable()
-export class BookService implements BookServiceInterface {
-
+export class BookService {
     constructor(
-        @inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
-        @inject(TYPES.BookRepository) private bookRepository: BookRepositoryInterface,
+        @inject(TYPES.BookRepository) private bookRepository: BookRepository
     ) {}
 
+    async createBook({ title, author, publicationDate, genres }: Book): Promise<Book | null> {
+        const newBook: Book = { title, author, publicationDate, genres };
+        return this.bookRepository.addBook(newBook);
+    }
 
-    async findAll() : Promise<BookModel[] | null>{
-        const result = this.bookRepository.findAll();
-        if (!result) {
-            return null
-        }
-        return result;
+    async getBooks(): Promise<Book[]> {
+        return this.bookRepository.getBooks();
+    }
 
-    };
-    create: (dto: CreateBookDto) => Promise<void>;
-    update: (dto: UpdateBookDto) => Promise<void>;
-    delete: (id: number) => Promise<void>;
-    async findById(id : number) {
+    async getBookById(id: string): Promise<Book | null> {
+        return this.bookRepository.getBookById(id);
+    }
 
+    async updateBook(id: string, bookUpdates: Partial<Book>): Promise<Book | null> {
+        return this.bookRepository.updateBook(id, bookUpdates);
+    }
+
+    async deleteBook(id: string): Promise<void> {
+        await this.bookRepository.deleteBook(id);
     }
 }

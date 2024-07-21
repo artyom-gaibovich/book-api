@@ -10,6 +10,7 @@ import { ExceptionFilterInterface } from './errors/exception.filter.interface';
 import { UserController } from './users/users.controller';
 import {AuthAdminMiddleware, AuthMiddleware} from './common/auth.middleware';
 import {PgPoolService} from "./database/pg-pool.service";
+import {MongoService} from "./database/mongo.service";
 
 @injectable()
 export class App {
@@ -20,6 +21,7 @@ export class App {
 	constructor(
 		@inject(TYPES.ILogger) private logger: LoggerInterface,
 		@inject(TYPES.DatabaseService) private database: PgPoolService,
+		@inject(TYPES.MongoService) private mongodb: MongoService,
 		@inject(TYPES.UserController) private userController: UserController,
 		@inject(TYPES.BookController) private bookController: UserController,
 		@inject(TYPES.ExeptionFilter) private exceptionFilter: ExceptionFilterInterface,
@@ -50,6 +52,7 @@ export class App {
 		this.useExceptionFilters();
 		this.server = this.app.listen(this.port);
 		this.logger.log(`Server start on http://localhost:${this.port}`);
+		this.mongodb.connect()
 		this.database.connect()
 	}
 

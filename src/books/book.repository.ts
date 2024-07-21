@@ -1,53 +1,61 @@
-import { BookModel } from "../database/model/book.model";
-import {BookRepositoryInterface} from "./book.repository.interface";
-import {CreateBookDto} from "./dto/create-book.dto";
-import {UpdateBookDto} from "./dto/update-book.dto";
-import {inject, injectable} from "inversify";
-import {TYPES} from "../types";
-import {PgPoolService} from "../database/pg-pool.service";
-import {UserModel} from "../database/model/user.model";
+// repositories/book.repository.ts
+import {inject, injectable} from 'inversify';
+import {MongoService} from '../database/mongo.service';
+import {TYPES} from '../types';
+import {InsertOneResult, ObjectId} from "mongodb";
 
+export interface Genre {
+    title: string;
+}
+
+export interface Book {
+    title: string;
+    author: string;
+    publicationDate: string;
+    genres: string[];
+}
 
 @injectable()
-export class BookRepository implements BookRepositoryInterface {
-    constructor(@inject(TYPES.DatabaseService) private databaseService: PgPoolService) {}
+export class BookRepository {
+    constructor(@inject(TYPES.MongoService) private mongoService: MongoService) {
+    }
 
-
-    async findAll(): Promise<BookModel[] | null> {
-        const query = `
-            SELECT 
-                b.id AS book_id, 
-                b.title AS book_title, 
-                b.publicationDate AS book_publication_date,
-                g.title AS genre_title
-            FROM books b
-            LEFT JOIN book_genres bg ON b.id = bg.book_id
-            LEFT JOIN genres g ON bg.genre_id = g.id
-        `;
-
-        const result = await this.databaseService.query(query);
-
-        if (result.length === 0) {
-            return null;
+    async addBook(book: Book): Promise<any> {
+        const mongoClient = await this.mongoService.get()
+        const result: InsertOneResult<Document> = await mongoClient.db('admin').collection('books').insertOne(book);
+        if (!result) {
+            throw new Error('Book creation failed');
         }
+        return await mongoClient.db('admin').collection('books').findOne({_id: result.insertedId});
 
-        const booksMap: { [key: number]: BookModel } = {};
+    }
 
-        result.forEach((row: any) => {
-            const bookId = row.book_id;
-            if (!booksMap[bookId]) {
-                booksMap[bookId] = {
-                    id: bookId,
-                    title: row.book_title,
-                    publicationDate: row.book_publication_date,
-                    genres: []
-                };
-            }
-            if (row.genre_title) {
-                booksMap[bookId].genres.push(row.genre_title);
-            }
-        });
+    async getBooks(): Promise<any[]> {
+        const mongoClient = await this.mongoService.get()
+        return mongoClient.db('admin').collection('books').find({}).toArray();
+    }
 
-        return Object.values(booksMap);
+    async getBookById(id: string): Promise<any | null> {
+        const mongoClient = await this.mongoService.get()
+        return mongoClient.db('admin').collection('books').findOne({ _id: new ObjectId(id) });
+    }
+
+    async updateBook(id: string, bookUpdates: Partial<Book>): Promise<any | null> {
+        const mongoClient = await this.mongoService.get()
+        const result = await mongoClient.db('admin').collection('books').findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: bookUpdates },
+            { }
+        );
+        if (!result) {
+            throw new Error('Book updating failed');
+        }
+        return mongoClient.db('admin').collection('books').findOne({ _id: new ObjectId(id) });
+
+    }
+
+    async deleteBook(id: string): Promise<any> {
+        const mongoClient = await this.mongoService.get()
+        return mongoClient.db('admin').collection('books').deleteOne({ _id: new ObjectId(id) });
     }
 }

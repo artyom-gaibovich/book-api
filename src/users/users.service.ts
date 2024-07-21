@@ -5,7 +5,7 @@ import {UserRegisterDto} from './dto/user-register.dto';
 import {User} from './user.entity';
 import {UsersRepositoryInterface} from './users.repository.interface';
 import {UsersServiceInterface} from './users.service.interface';
-import {UserModel} from "../database/model/user.model";
+import {UserModel} from "./user.model";
 import {RolesRepositoryInterface} from "../roles/roles.repository.interface";
 import {TypesRoles} from "../roles/role.interface";
 import {ConfigServiceInterface} from "../config/config.service.interface";

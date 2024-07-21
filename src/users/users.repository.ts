@@ -3,7 +3,7 @@ import { TYPES } from '../types';
 import { User } from './user.entity';
 import { UsersRepositoryInterface } from './users.repository.interface';
 import { PgPoolService } from "../database/pg-pool.service";
-import {UserModel} from "../database/model/user.model";
+import {UserModel} from "./user.model";
 import {TypesRoles} from "../roles/role.interface";
 import {RolesRepositoryInterface} from "../roles/roles.repository.interface";
 

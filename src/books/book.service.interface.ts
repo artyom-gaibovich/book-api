@@ -1,12 +1,9 @@
-import {NextFunction, Request, Response} from "express";
-import {CreateBookDto} from "./dto/create-book.dto";
-import {UpdateBookDto} from "./dto/update-book.dto";
-import {BookModel} from "../database/model/book.model";
+import {BookInterface} from "./book.interface";
 
 export interface BookServiceInterface {
-    findAll: () => Promise<BookModel[] | null>;
-    create: (dto: CreateBookDto) => Promise<void>;
-    findById: (id: number) => Promise<void>;
-    update: (dto: UpdateBookDto) => Promise<void>;
-    delete: (id : number) => Promise<void>;
+    findAll(): Promise<any | null>;
+    findById(id: number): Promise<any | null>;
+    create(book: BookInterface): Promise<BookInterface | null>;
+    //delete(id: number): Promise<null>;
+    //update(id: number, book: BookInterface): Promise<BookInterface | null>;
 }
