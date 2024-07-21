@@ -1,9 +1,9 @@
-import {ConfigService} from "./config.service";
+import { ConfigService } from './config.service';
 
-export const getMongoConfig =  (configService: ConfigService) => {
+export const getMongoConfig = (configService: ConfigService) => {
 	return {
 		uri: getMongoString(configService),
-		...getMongoOptions()
+		...getMongoOptions(),
 	};
 };
 
@@ -21,7 +21,5 @@ const getMongoString = (configService: ConfigService) =>
 
 const getMongoOptions = () => ({
 	useNewUrlParser: true,
-	useUnifiedTopology: true
+	useUnifiedTopology: true,
 });
-
-

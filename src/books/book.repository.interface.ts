@@ -1,11 +1,13 @@
-import {CreateBookDto} from "./dto/create-book.dto";
-import {UpdateBookDto} from "./dto/update-book.dto";
-import {BookModel} from "./book.model";
+import { BookModel } from './book.model';
 
 export interface BookRepositoryInterface {
-    findAll: () => Promise<BookModel[] | null>;
-    //create: (dto: CreateBookDto) => Promise<BookModel | null>;
-    findById: (id: number) => Promise<BookModel | null>;
-    //update: (dto: UpdateBookDto) => Promise<BookModel | null>;
-    //delete: (id : number) => Promise<BookModel | null>;
+	deleteBook(id: string): Promise<void>;
+
+	getBooks(): Promise<BookModel[]>;
+
+	getBookById(id: string): Promise<BookModel | null>;
+
+	addBook(book: BookModel): Promise<BookModel | null>;
+
+	updateBook(id: string, bookUpdates: Partial<BookModel>): Promise<BookModel | null>;
 }
