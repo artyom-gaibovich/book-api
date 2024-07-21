@@ -1,30 +1,28 @@
-import { NextFunction, Request, Response } from 'express';
-import { injectable, inject } from 'inversify';
-import { BaseController } from '../common/base.controller';
-import { HTTPError } from '../errors/http-error.class';
-import { ILogger } from '../logger/logger.interface';
-import { TYPES } from '../types';
+import {NextFunction, Request, Response} from 'express';
+import {inject, injectable} from 'inversify';
+import {BaseController} from '../common/base.controller';
+import {HTTPError} from '../errors/http-error.class';
+import {LoggerInterface} from '../logger/logger.interface';
+import {TYPES} from '../types';
 import 'reflect-metadata';
-import { IUserController } from './users.controller.interface';
-import { UserLoginDto } from './dto/user-login.dto';
-import { UserRegisterDto } from './dto/user-register.dto';
-import { ValidateMiddleware } from '../common/validate.middleware';
-import { sign } from 'jsonwebtoken';
-import { IConfigService } from '../config/config.service.interface';
-import { IUserService } from './users.service.interface';
-import {AuthAdminGuard, AuthGuard} from '../common/auth.guard';
+import {UsersControllerInterface} from './users.controller.interface';
+import {UserLoginDto} from './dto/user-login.dto';
+import {UserRegisterDto} from './dto/user-register.dto';
+import {ValidateMiddleware} from '../common/validate.middleware';
+import {sign} from 'jsonwebtoken';
+import {ConfigServiceInterface} from '../config/config.service.interface';
+import {UsersServiceInterface} from './users.service.interface';
+import {AuthAdminGuard} from '../common/auth.guard';
 import {UpdateRolesDto} from "./dto/update-roles.dto";
-import {TransformerMiddleware} from "../common/transformer.middleware";
 import {TypesRoles} from "../roles/role.interface";
 import {UserModel} from "../database/model/user.model";
-import {AuthAdminMiddleware} from "../common/auth.middleware";
 
 @injectable()
-export class UserController extends BaseController implements IUserController {
+export class UserController extends BaseController implements UsersControllerInterface {
 	constructor(
-		@inject(TYPES.ILogger) private loggerService: ILogger,
-		@inject(TYPES.UserService) private userService: IUserService,
-		@inject(TYPES.ConfigService) private configService: IConfigService,
+		@inject(TYPES.ILogger) private loggerService: LoggerInterface,
+		@inject(TYPES.UserService) private userService: UsersServiceInterface,
+		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 	) {
 		super(loggerService);
 		this.bindRoutes([
@@ -44,7 +42,7 @@ export class UserController extends BaseController implements IUserController {
 				path: '/update-roles',
 				method: 'post',
 				func: this.updateRoles,
-				middlewares: [new ValidateMiddleware(UpdateRolesDto), new AuthGuard()],
+				middlewares: [new ValidateMiddleware(UpdateRolesDto), new AuthAdminGuard()],
 			},
 			{
 				path: '/info',

@@ -4,7 +4,7 @@ import {UserModel} from "../database/model/user.model";
 import {TypesRoles} from "../roles/role.interface";
 import {UserToRolesInterface} from "../roles/user-to-roles.interface";
 
-export interface IUserService {
+export interface UsersServiceInterface {
 	findRoles: (userId: number) => Promise<TypesRoles[] | void>
 	createUser: (dto: UserRegisterDto) => Promise<UserModel | null>;
 	validateUser: (dto: UserLoginDto) => Promise<boolean>;

@@ -1,12 +1,12 @@
 import express, { Express } from 'express';
 import { Server } from 'http';
 import { inject, injectable } from 'inversify';
-import { ILogger } from './logger/logger.interface';
+import { LoggerInterface } from './logger/logger.interface';
 import { TYPES } from './types';
 import { json } from 'body-parser';
 import 'reflect-metadata';
-import { IConfigService } from './config/config.service.interface';
-import { IExeptionFilter } from './errors/exeption.filter.interface';
+import { ConfigServiceInterface } from './config/config.service.interface';
+import { ExceptionFilterInterface } from './errors/exception.filter.interface';
 import { UserController } from './users/users.controller';
 import {AuthAdminMiddleware, AuthMiddleware} from './common/auth.middleware';
 import {PgPoolService} from "./database/pg-pool.service";
@@ -18,11 +18,12 @@ export class App {
 	port: number;
 
 	constructor(
-		@inject(TYPES.ILogger) private logger: ILogger,
+		@inject(TYPES.ILogger) private logger: LoggerInterface,
 		@inject(TYPES.DatabaseService) private database: PgPoolService,
 		@inject(TYPES.UserController) private userController: UserController,
-		@inject(TYPES.ExeptionFilter) private exeptionFilter: IExeptionFilter,
-		@inject(TYPES.ConfigService) private configService: IConfigService,
+		@inject(TYPES.BookController) private bookController: UserController,
+		@inject(TYPES.ExeptionFilter) private exceptionFilter: ExceptionFilterInterface,
+		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 	) {
 		this.app = express();
 		this.port = 8000;
@@ -36,16 +37,17 @@ export class App {
 
 	useRoutes(): void {
 		this.app.use('/users', this.userController.router);
+		this.app.use('/books', this.bookController.router);
 	}
 
-	useExeptionFilters(): void {
-		this.app.use(this.exeptionFilter.catch.bind(this.exeptionFilter));
+	useExceptionFilters(): void {
+		this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
 	}
 
 	public async init(): Promise<void> {
 		this.useMiddleware();
 		this.useRoutes();
-		this.useExeptionFilters();
+		this.useExceptionFilters();
 		this.server = this.app.listen(this.port);
 		this.logger.log(`Server start on http://localhost:${this.port}`);
 		this.database.connect()

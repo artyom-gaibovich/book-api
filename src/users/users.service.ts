@@ -1,20 +1,19 @@
-import { inject, injectable } from 'inversify';
-import { IConfigService } from '../config/config.service.interface';
-import { TYPES } from '../types';
-import { UserLoginDto } from './dto/user-login.dto';
-import { UserRegisterDto } from './dto/user-register.dto';
-import { User } from './user.entity';
-import { UsersRepositoryInterface } from './users.repository.interface';
-import { IUserService } from './users.service.interface';
+import {inject, injectable} from 'inversify';
+import {TYPES} from '../types';
+import {UserLoginDto} from './dto/user-login.dto';
+import {UserRegisterDto} from './dto/user-register.dto';
+import {User} from './user.entity';
+import {UsersRepositoryInterface} from './users.repository.interface';
+import {UsersServiceInterface} from './users.service.interface';
 import {UserModel} from "../database/model/user.model";
 import {RolesRepositoryInterface} from "../roles/roles.repository.interface";
 import {TypesRoles} from "../roles/role.interface";
-import {UserToRolesInterface, UserToToRoles} from "../roles/user-to-roles.interface";
+import {ConfigServiceInterface} from "../config/config.service.interface";
 
 @injectable()
-export class UserService implements IUserService {
+export class UserService implements UsersServiceInterface {
 	constructor(
-		@inject(TYPES.ConfigService) private configService: IConfigService,
+		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 		@inject(TYPES.UsersRepository) private usersRepository: UsersRepositoryInterface,
 		@inject(TYPES.RolesRepository) private rolesRepository: RolesRepositoryInterface,
 	) {}
