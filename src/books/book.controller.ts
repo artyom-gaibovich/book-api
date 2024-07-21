@@ -69,7 +69,6 @@ export class BookController extends BaseController implements BookControllerInte
     }
 
     async findAll(req: Request, res: Response, next: NextFunction): Promise<any> {
-        console.log(req)
         const result = await this.bookService.findAll()
         this.ok(res, {result});
     }
