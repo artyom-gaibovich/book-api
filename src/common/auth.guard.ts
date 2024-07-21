@@ -1,7 +1,7 @@
-import { IMiddleware } from './middleware.interface';
+import { MiddlewareInterface } from './middleware.interface';
 import { NextFunction, Request, Response } from 'express';
 
-export class AuthGuard implements IMiddleware {
+export class AuthGuard implements MiddlewareInterface {
 	execute(req: Request, res: Response, next: NextFunction): void {
 		if (req.user) {
 			return next();
@@ -10,10 +10,9 @@ export class AuthGuard implements IMiddleware {
 	}
 }
 
-
-export class AuthAdminGuard implements IMiddleware {
+export class AuthAdminGuard implements MiddlewareInterface {
 	execute(req: Request, res: Response, next: NextFunction): void {
-		console.log(req.roles, req.user)
+		console.log(req.roles, req.user);
 		if (req.user && req.roles && req.roles.includes('ADMIN')) {
 			return next();
 		}

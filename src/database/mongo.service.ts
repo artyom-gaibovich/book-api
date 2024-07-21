@@ -7,33 +7,31 @@ import { MongoClientFactory } from '../factory/mongo.factory';
 
 @injectable()
 export class MongoService {
-    private readonly client: MongoClient;
+	private readonly client: MongoClient;
 
-    constructor(
-        @inject(TYPES.Logger) private logger: LoggerInterface,
-        @inject(TYPES.MongoClientFactory) mongoClientFactory: MongoClientFactory
-    ) {
-        this.client = mongoClientFactory.createClient();
-    }
+	constructor(
+		@inject(TYPES.Logger) private logger: LoggerInterface,
+		@inject(TYPES.MongoClientFactory) mongoClientFactory: MongoClientFactory,
+	) {
+		this.client = mongoClientFactory.createClient();
+	}
 
-    async connect(): Promise<void> {
-        try {
-            await this.client.connect();
-            this.logger.log('[MongoService] Successfully connected to MongoDB');
-        } catch (e) {
-            if (e instanceof Error) {
-                this.logger.error('[MongoService] Error connecting to MongoDB: ' + e.message);
-            }
-        }
-    }
+	async connect(): Promise<void> {
+		try {
+			await this.client.connect();
+			this.logger.log('[MongoService] Successfully connected to MongoDB');
+		} catch (e) {
+			if (e instanceof Error) {
+				this.logger.error('[MongoService] Error connecting to MongoDB: ' + e.message);
+			}
+		}
+	}
 
+	async get() {
+		return this.client;
+	}
 
-    async get() {
-        return this.client;
-    }
-    async disconnect(): Promise<void> {
-        await this.client.close();
-    }
-
-
+	async disconnect(): Promise<void> {
+		await this.client.close();
+	}
 }

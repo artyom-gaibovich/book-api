@@ -6,10 +6,10 @@ import { TYPES } from '../types';
 
 @injectable()
 export class MongoClientFactory {
-    constructor(@inject(TYPES.ConfigService) private configService: ConfigService) {}
+	constructor(@inject(TYPES.ConfigService) private configService: ConfigService) {}
 
-    createClient(): MongoClient {
-        const config = getMongoConfig(this.configService);
-        return new MongoClient(config.uri);
-    }
+	createClient(): MongoClient {
+		const config = getMongoConfig(this.configService);
+		return new MongoClient(config.uri);
+	}
 }

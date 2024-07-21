@@ -9,6 +9,7 @@ import 'reflect-metadata';
 @injectable()
 export class ExceptionFilter implements ExceptionFilterInterface {
 	constructor(@inject(TYPES.Logger) private logger: LoggerInterface) {}
+
 	catch(err: Error | HTTPError, req: Request, res: Response, _: NextFunction): void {
 		if (err instanceof HTTPError) {
 			this.logger.error(`[${err.context}] Error ${err.statusCode}: ${err.message}`);

@@ -1,9 +1,10 @@
-import { IMiddleware } from './middleware.interface';
+import { MiddlewareInterface } from './middleware.interface';
 import { NextFunction, Request, Response } from 'express';
 import { ClassConstructor, plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
+import { ObjectId } from 'mongodb';
 
-export class ValidateMiddleware implements IMiddleware {
+export class ValidateMiddleware implements MiddlewareInterface {
 	constructor(private classToValidate: ClassConstructor<object>) {}
 
 	execute({ body }: Request, res: Response, next: NextFunction): void {
@@ -15,5 +16,18 @@ export class ValidateMiddleware implements IMiddleware {
 				next();
 			}
 		});
+	}
+}
+
+export class ValidateParamIdMiddleware implements MiddlewareInterface {
+	constructor(private paramName: string) {}
+
+	execute(req: Request, res: Response, next: NextFunction): void {
+		const paramValue = req.params[this.paramName];
+		if (!ObjectId.isValid(paramValue)) {
+			res.status(400).send({ err: 'Invalid ID format' });
+		} else {
+			next();
+		}
 	}
 }

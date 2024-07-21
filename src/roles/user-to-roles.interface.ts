@@ -1,7 +1,6 @@
-import {TypesRoles} from "./role.types";
+import { TypesRoles } from './role.types';
 
 export interface UserToRolesInterface {
-    userId: number,
-    roles: TypesRoles[]
+	userId: number;
+	roles: TypesRoles[];
 }
-

@@ -62,10 +62,9 @@ export class UserController extends BaseController implements UsersControllerInt
 		if (!result) {
 			return next(new HTTPError(401, 'error authorization', 'login'));
 		}
-		const user = await this.userService.getUserInfo(req.body.email) as UserModel
-		const userRoles = await this.userService.findRoles(user.id) as TypesRoles[]
+		const user = (await this.userService.getUserInfo(req.body.email)) as UserModel;
+		const userRoles = (await this.userService.findRoles(user.id)) as TypesRoles[];
 		const jwt = await this.signJWT(userRoles, req.body.email, this.configService.get('SECRET'));
-		console.log(userRoles, jwt)
 		this.ok(res, { jwt });
 	}
 
@@ -83,21 +82,24 @@ export class UserController extends BaseController implements UsersControllerInt
 
 	async info({ user, roles }: Request<{}, {}, {}>, res: Response, _: NextFunction): Promise<void> {
 		const userInfo = await this.userService.getUserInfo(user);
-		this.ok(res, { email: userInfo?.email, id: userInfo?.id, roles : roles });
+		this.ok(res, { email: userInfo?.email, id: userInfo?.id, roles: roles });
 	}
 
-	async updateRoles(req : Request<{}, {}, UpdateRolesDto>, res: Response, _: NextFunction) {
-		const transformRoles = Array.from<TypesRoles>(new Set(req.body.roles))
-		const userRoles = await this.userService.updateRoles(req.body.userId, transformRoles)
-		this.ok(res, userRoles)
+	async updateRoles(
+		req: Request<{}, {}, UpdateRolesDto>,
+		res: Response,
+		_: NextFunction,
+	): Promise<void> {
+		const transformRoles = Array.from<TypesRoles>(new Set(req.body.roles));
+		const userRoles = await this.userService.updateRoles(req.body.userId, transformRoles);
+		this.ok(res, userRoles);
 	}
-
 
 	private signJWT(roles: TypesRoles[], email: string, secret: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			sign(
 				{
-					roles : roles,
+					roles: roles,
 					email,
 					iat: Math.floor(Date.now() / 1000),
 				},
@@ -114,6 +116,4 @@ export class UserController extends BaseController implements UsersControllerInt
 			);
 		});
 	}
-
-
 }

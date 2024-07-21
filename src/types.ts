@@ -10,12 +10,10 @@ export const TYPES = {
 
 	MongoClientFactory: Symbol.for('MongoClientFactory'),
 
-
 	GenresRepository: Symbol.for('GenresRepository'),
 	BookGenresRepository: Symbol.for('BookGenresRepository'),
 
-
-	MongoService : Symbol.for('MongoService'),
+	MongoService: Symbol.for('MongoService'),
 
 	ExceptionFilter: Symbol.for('ExceptionFilter'),
 	ConfigService: Symbol.for('ConfigService'),
@@ -25,6 +23,5 @@ export const TYPES = {
 	RolesRepository: Symbol.for('RolesRepository'),
 	DatabaseConfig: Symbol.for('DatabaseConfig'),
 
-
-	PgPoolFactory: Symbol.for('PgPoolFactory')
+	PgPoolFactory: Symbol.for('PgPoolFactory'),
 };

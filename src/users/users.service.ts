@@ -1,14 +1,15 @@
-import {inject, injectable} from 'inversify';
-import {TYPES} from '../types';
-import {UserLoginDto} from './dto/user-login.dto';
-import {UserRegisterDto} from './dto/user-register.dto';
-import {User} from './user.entity';
-import {UsersRepositoryInterface} from './users.repository.interface';
-import {UsersServiceInterface} from './users.service.interface';
-import {UserModel} from "./user.model";
-import {RolesRepositoryInterface} from "../roles/roles.repository.interface";
-import {TypesRoles} from "../roles/role.types";
-import {ConfigServiceInterface} from "../config/config.service.interface";
+import { inject, injectable } from 'inversify';
+import { TYPES } from '../types';
+import { UserLoginDto } from './dto/user-login.dto';
+import { UserRegisterDto } from './dto/user-register.dto';
+import { User } from './user.entity';
+import { UsersRepositoryInterface } from './users.repository.interface';
+import { UsersServiceInterface } from './users.service.interface';
+import { UserModel } from './user.model';
+import { RolesRepositoryInterface } from '../roles/roles.repository.interface';
+import { TypesRoles } from '../roles/role.types';
+import { ConfigServiceInterface } from '../config/config.service.interface';
+import { UserToRolesInterface } from '../roles/user-to-roles.interface';
 
 @injectable()
 export class UserService implements UsersServiceInterface {
@@ -38,20 +39,25 @@ export class UserService implements UsersServiceInterface {
 		return newUser.comparePassword(password);
 	}
 
-	async findRoles(userId: number) : Promise<TypesRoles[] | void>{
-		const result = await this.rolesRepository.findByUserId(userId)
+	async findRoles(userId: number): Promise<TypesRoles[] | null> {
+		const result = await this.rolesRepository.findByUserId(userId);
 		if (!result) {
-			return;
+			return null;
 		}
 		return result.roles;
 	}
+
 	async getUserInfo(email: string): Promise<UserModel | null> {
 		return this.usersRepository.find(email);
 	}
 
-	async updateRoles(userId: number, newRoles: TypesRoles[]) {
-		await this.rolesRepository.deleteByUserId(userId)
-		await this.rolesRepository.create(userId, newRoles)
-		return this.rolesRepository.findByUserId(userId)
+	async updateRoles(userId: number, newRoles: TypesRoles[]): Promise<UserToRolesInterface | null> {
+		await this.rolesRepository.deleteByUserId(userId);
+		await this.rolesRepository.create(userId, newRoles);
+		const result = this.rolesRepository.findByUserId(userId);
+		if (!result) {
+			return null;
+		}
+		return result;
 	}
 }

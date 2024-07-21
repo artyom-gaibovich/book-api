@@ -1,8 +1,8 @@
-import { IMiddleware } from './middleware.interface';
+import { MiddlewareInterface } from './middleware.interface';
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 
-export class AuthMiddleware implements IMiddleware {
+export class AuthMiddleware implements MiddlewareInterface {
 	constructor(private secret: string) {}
 
 	execute(req: Request, res: Response, next: NextFunction): void {
@@ -21,11 +21,8 @@ export class AuthMiddleware implements IMiddleware {
 	}
 }
 
-
-export class AuthAdminMiddleware implements IMiddleware {
-
+export class AuthAdminMiddleware implements MiddlewareInterface {
 	constructor(private secret: string) {}
-
 
 	execute(req: Request, res: Response, next: NextFunction): void {
 		if (req.headers.authorization) {
@@ -34,15 +31,12 @@ export class AuthAdminMiddleware implements IMiddleware {
 					next();
 				} else if (payload) {
 					req.user = payload.email;
-					req.roles = payload.roles.map((role : any) => role.role_value);
+					req.roles = payload.roles.map((role: any) => role.role_value);
 					next();
 				}
 			});
-
-
 		} else {
 			next();
 		}
 	}
-
 }

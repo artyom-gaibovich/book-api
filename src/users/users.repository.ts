@@ -5,7 +5,6 @@ import { UsersRepositoryInterface } from './users.repository.interface';
 import { PgPoolService } from '../database/pg-pool.service';
 import { UserModel } from './user.model';
 
-
 @injectable()
 export class UsersRepository implements UsersRepositoryInterface {
 	constructor(@inject(TYPES.DatabaseService) private databaseService: PgPoolService) {}
@@ -29,6 +28,4 @@ export class UsersRepository implements UsersRepositoryInterface {
 		const user = result[0];
 		return user as UserModel;
 	}
-
-
 }
