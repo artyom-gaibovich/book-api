@@ -8,6 +8,9 @@ export const TYPES = {
 	BookRepository: Symbol.for('BookRepository'),
 	BookController: Symbol.for('BookController'),
 
+	GenresRepository: Symbol.for('GenresRepository'),
+	BookGenresRepository: Symbol.for('BookGenresRepository'),
+
 
 	ExeptionFilter: Symbol.for('ExeptionFilter'),
 	ConfigService: Symbol.for('ConfigService'),

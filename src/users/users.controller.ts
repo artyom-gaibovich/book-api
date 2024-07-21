@@ -15,7 +15,7 @@ import {UsersServiceInterface} from './users.service.interface';
 import {AuthAdminGuard} from '../common/auth.guard';
 import {UpdateRolesDto} from "./dto/update-roles.dto";
 import {TypesRoles} from "../roles/role.interface";
-import {UserModel} from "../database/model/user.model";
+import {UserModel} from "./user.model";
 
 @injectable()
 export class UserController extends BaseController implements UsersControllerInterface {

@@ -1,4 +1,4 @@
-import {BookModel} from "../database/model/book.model";
+import {BookModel} from "./book.model";
 import {BookRepositoryInterface} from "./book.repository.interface";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../types";
@@ -9,80 +9,35 @@ import {PgPoolService} from "../database/pg-pool.service";
 export class BookRepository implements BookRepositoryInterface {
     constructor(@inject(TYPES.DatabaseService) private databaseService: PgPoolService) {}
 
-    async findAll(): Promise<BookModel[] | null> {
-        const query = `
-            SELECT 
-                b.id AS book_id, 
-                b.title AS book_title, 
-                b.publicationDate AS book_publication_date,
-                g.title AS genre_title
-            FROM books b
-            LEFT JOIN book_genres bg ON b.id = bg.book_id
-            LEFT JOIN genres g ON bg.genre_id = g.id
-        `;
 
+    async findAll(): Promise<BookModel[]> {
+        const query = 'SELECT * FROM books;';
         const result = await this.databaseService.query(query);
-        if (result.length === 0) {
-            return null;
-        }
-
-        const booksMap: { [key: number]: BookModel } = {};
-
-        result.forEach((row: any) => {
-            const bookId = row.book_id;
-            if (!booksMap[bookId]) {
-                booksMap[bookId] = {
-                    id: bookId,
-                    author: row.book_author,
-                    title: row.book_title,
-                    publicationDate: row.book_publication_date,
-                    genres: []
-                };
-            }
-            if (row.genre_title) {
-                booksMap[bookId].genres.push(row.genre_title);
-            }
-        });
-
-        return Object.values(booksMap);
+        return result as BookModel[];
     }
 
     async findById(id: number): Promise<BookModel | null> {
-        const query = `
-            SELECT 
-                b.id AS book_id, 
-                b.title AS book_title, 
-                b.publicationDate AS book_publication_date,
-                g.title AS genre_title
-            FROM books b
-            LEFT JOIN book_genres bg ON b.id = bg.book_id
-            LEFT JOIN genres g ON bg.genre_id = g.id
-            WHERE b.id = $1
-        `;
-
+        const query = 'SELECT * FROM books WHERE id = $1;';
         const result = await this.databaseService.query(query, [id]);
-
         if (result.length === 0) {
             return null;
         }
+        const book = result[0];
+        return book as BookModel;
+    }
 
-        let book: BookModel | null = null;
+    async create({ title, author, publicationDate }: { title : string, author : string, publicationDate : string }): Promise<BookModel | null> {
+        const query = 'INSERT INTO books (title, author, publicationDate) VALUES ($1, $2, $3) RETURNING *;';
+        const result = await this.databaseService.query(query, [title, author, publicationDate]);
+        if (result.length === 0) {
+            return null;
+        }
+        const book = result[0];
+        return book as BookModel;
+    }
 
-        result.forEach((row: any) => {
-            if (!book) {
-                book = {
-                    author: row.book_author,
-                    id: row.book_id,
-                    title: row.book_title,
-                    publicationDate: row.book_publication_date,
-                    genres: []
-                };
-            }
-            if (row.genre_title) {
-                book.genres.push(row.genre_title);
-            }
-        });
-
-        return book;
+    async delete(id: number): Promise<void> {
+        const query = 'DELETE FROM books WHERE id = $1;';
+        await this.databaseService.query(query, [id]);
     }
 }

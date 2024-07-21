@@ -23,6 +23,10 @@ import {BookServiceInterface} from "./books/book.service.interface";
 import {BookService} from "./books/book.service";
 import {BookControllerInterface} from "./books/book.controller.interface";
 import {BookController} from "./books/book.controller";
+import {BookGenresRepositoryInterface} from "./book-genres/book-genres.repository.interface";
+import {GenresRepositoryInterface} from "./genres/genres.repository.interface";
+import {BookGenresRepository} from "./book-genres/book-genres.repository";
+import {GenresRepository} from "./genres/genres.repository";
 
 export interface IBootstrapReturn {
 	appContainer: Container;
@@ -45,6 +49,8 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<BookServiceInterface>(TYPES.BookService).to(BookService).inSingletonScope();
 	bind<BookControllerInterface>(TYPES.BookController).to(BookController).inSingletonScope();
 
+	bind<BookGenresRepositoryInterface>(TYPES.BookGenresRepository).to(BookGenresRepository).inSingletonScope();
+	bind<GenresRepositoryInterface>(TYPES.GenresRepository).to(GenresRepository).inSingletonScope();
 
 
 	bind<RolesRepositoryInterface>(TYPES.RolesRepository).to(RolesRepository).inSingletonScope();

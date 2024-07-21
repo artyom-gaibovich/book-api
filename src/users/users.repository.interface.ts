@@ -1,5 +1,5 @@
 import {User} from './user.entity';
-import {UserModel} from "../database/model/user.model";
+import {UserModel} from "./user.model";
 
 export interface UsersRepositoryInterface {
 	create: (user: User) => Promise<UserModel>;

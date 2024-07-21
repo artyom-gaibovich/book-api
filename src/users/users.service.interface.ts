@@ -1,6 +1,6 @@
 import {UserLoginDto} from './dto/user-login.dto';
 import {UserRegisterDto} from './dto/user-register.dto';
-import {UserModel} from "../database/model/user.model";
+import {UserModel} from "./user.model";
 import {TypesRoles} from "../roles/role.interface";
 import {UserToRolesInterface} from "../roles/user-to-roles.interface";
 

@@ -76,9 +76,9 @@ export class BookController extends BaseController implements BookControllerInte
 
     async findById(req: Request<any,{},{}>, res: Response, next: NextFunction): Promise<void> {
         const {id} = req.params;
-        //While i set any. later i fix it.
-        const result = await this.bookService.findById(id);
-        this.ok(res,{result});
+        //While i set any. later i will fix it.
+
+        this.ok(res,{result : 'resul'});
     }
 
     async update(req: Request, res: Response, next: NextFunction): Promise<void> {
