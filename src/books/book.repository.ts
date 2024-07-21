@@ -3,24 +3,20 @@ import {inject, injectable} from 'inversify';
 import {MongoService} from '../database/mongo.service';
 import {TYPES} from '../types';
 import {InsertOneResult, ObjectId} from "mongodb";
+import {BookModel} from "./book.model";
 
 export interface Genre {
     title: string;
 }
 
-export interface Book {
-    title: string;
-    author: string;
-    publicationDate: string;
-    genres: string[];
-}
+
 
 @injectable()
 export class BookRepository {
     constructor(@inject(TYPES.MongoService) private mongoService: MongoService) {
     }
 
-    async addBook(book: Book): Promise<any> {
+    async addBook(book: BookModel): Promise<any> {
         const mongoClient = await this.mongoService.get()
         const result: InsertOneResult<Document> = await mongoClient.db('admin').collection('books').insertOne(book);
         if (!result) {
@@ -40,7 +36,7 @@ export class BookRepository {
         return mongoClient.db('admin').collection('books').findOne({ _id: new ObjectId(id) });
     }
 
-    async updateBook(id: string, bookUpdates: Partial<Book>): Promise<any | null> {
+    async updateBook(id: string, bookUpdates: Partial<BookModel>): Promise<any | null> {
         const mongoClient = await this.mongoService.get()
         const result = await mongoClient.db('admin').collection('books').findOneAndUpdate(
             { _id: new ObjectId(id) },

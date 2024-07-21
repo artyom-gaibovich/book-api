@@ -1,26 +1,26 @@
-import {NextFunction, Request, Response} from 'express';
-import {inject, injectable} from 'inversify';
-import {BaseController} from '../common/base.controller';
-import {HTTPError} from '../errors/http-error.class';
-import {LoggerInterface} from '../logger/logger.interface';
-import {TYPES} from '../types';
+import { NextFunction, Request, Response } from 'express';
+import { inject, injectable } from 'inversify';
+import { BaseController } from '../common/base.controller';
+import { HTTPError } from '../errors/http-error.class';
+import { LoggerInterface } from '../logger/logger.interface';
+import { TYPES } from '../types';
 import 'reflect-metadata';
-import {UsersControllerInterface} from './users.controller.interface';
-import {UserLoginDto} from './dto/user-login.dto';
-import {UserRegisterDto} from './dto/user-register.dto';
-import {ValidateMiddleware} from '../common/validate.middleware';
-import {sign} from 'jsonwebtoken';
-import {ConfigServiceInterface} from '../config/config.service.interface';
-import {UsersServiceInterface} from './users.service.interface';
-import {AuthAdminGuard} from '../common/auth.guard';
-import {UpdateRolesDto} from "./dto/update-roles.dto";
-import {TypesRoles} from "../roles/role.interface";
-import {UserModel} from "./user.model";
+import { UsersControllerInterface } from './users.controller.interface';
+import { UserLoginDto } from './dto/user-login.dto';
+import { UserRegisterDto } from './dto/user-register.dto';
+import { ValidateMiddleware } from '../common/validate.middleware';
+import { sign } from 'jsonwebtoken';
+import { ConfigServiceInterface } from '../config/config.service.interface';
+import { UsersServiceInterface } from './users.service.interface';
+import { AuthAdminGuard } from '../common/auth.guard';
+import { UpdateRolesDto } from './dto/update-roles.dto';
+import { TypesRoles } from '../roles/role.types';
+import { UserModel } from './user.model';
 
 @injectable()
 export class UserController extends BaseController implements UsersControllerInterface {
 	constructor(
-		@inject(TYPES.ILogger) private loggerService: LoggerInterface,
+		@inject(TYPES.Logger) private loggerService: LoggerInterface,
 		@inject(TYPES.UserService) private userService: UsersServiceInterface,
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 	) {
@@ -81,12 +81,12 @@ export class UserController extends BaseController implements UsersControllerInt
 		this.ok(res, { email: result.email, id: result.id });
 	}
 
-	async info({ user, roles }: Request<{}, {}, {}>, res: Response, next: NextFunction): Promise<void> {
+	async info({ user, roles }: Request<{}, {}, {}>, res: Response, _: NextFunction): Promise<void> {
 		const userInfo = await this.userService.getUserInfo(user);
 		this.ok(res, { email: userInfo?.email, id: userInfo?.id, roles : roles });
 	}
 
-	async updateRoles(req : Request<{}, {}, UpdateRolesDto>, res: Response, next: NextFunction) {
+	async updateRoles(req : Request<{}, {}, UpdateRolesDto>, res: Response, _: NextFunction) {
 		const transformRoles = Array.from<TypesRoles>(new Set(req.body.roles))
 		const userRoles = await this.userService.updateRoles(req.body.userId, transformRoles)
 		this.ok(res, userRoles)

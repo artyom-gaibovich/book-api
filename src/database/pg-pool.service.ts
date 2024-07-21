@@ -1,18 +1,17 @@
-import {inject, injectable} from 'inversify';
-import {Pool} from 'pg';
-import {TYPES} from "../types";
-import {LoggerInterface} from "../logger/logger.interface";
-import {DatabaseConfig} from "./database.config";
+import { inject, injectable } from 'inversify';
+import { Pool } from 'pg';
+import { TYPES } from '../types';
+import { LoggerInterface } from '../logger/logger.interface';
+import { PgPoolFactory } from '../factory/pg-pool.factory';
 
 @injectable()
 export class PgPoolService {
     private client: Pool;
 
     constructor(
-        @inject(TYPES.ILogger) private logger: LoggerInterface,
-        @inject(TYPES.DatabaseConfig) private databaseConfig: DatabaseConfig
-    ) {
-        this.client = new Pool(this.databaseConfig.getPoolConfig())
+        @inject(TYPES.Logger) private logger: LoggerInterface,
+        @inject(TYPES.PgPoolFactory) pgPoolFactory: PgPoolFactory) {
+        this.client = pgPoolFactory.createPool();
     }
 
 
@@ -31,15 +30,16 @@ export class PgPoolService {
         await this.client.end();
     }
 
-
-
-
     async query(query: string, params: any[] = []): Promise<any> {
         const client = await this.client.connect();
         try {
             const res = await client.query(query, params);
             return res.rows;
-        } finally {
+        } catch (e) {
+            this.logger.log('[PgPoolService] Error when you make query');
+
+        }
+        finally {
             client.release();
         }
     }

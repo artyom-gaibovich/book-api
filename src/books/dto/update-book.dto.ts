@@ -1,6 +1,4 @@
-import {IsArray, IsIn, IsNotEmpty, IsString} from "class-validator";
-import {Transform} from "class-transformer";
-import {TypesRoles} from "../../roles/role.interface";
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateBookDto {
 

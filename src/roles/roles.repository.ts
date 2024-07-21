@@ -3,7 +3,7 @@ import {TYPES} from '../types';
 import {PgPoolService} from "../database/pg-pool.service";
 import {RolesRepositoryInterface} from "./roles.repository.interface";
 import {UserToRolesInterface} from "./user-to-roles.interface";
-import {TypesRoles} from "./role.interface";
+import {TypesRoles} from "./role.types";
 
 
 @injectable()

@@ -17,13 +17,13 @@ import {PgPoolService} from "./database/pg-pool.service";
 import {DatabaseConfig} from "./database/database.config";
 import {RolesRepositoryInterface} from "./roles/roles.repository.interface";
 import {RolesRepository} from "./roles/roles.repository";
-import {BookRepositoryInterface} from "./books/book.repository.interface";
 import {BookRepository} from "./books/book.repository";
-import {BookServiceInterface} from "./books/book.service.interface";
 import {BookService} from "./books/book.service";
 import {BookControllerInterface} from "./books/book.controller.interface";
 import {BookController} from "./books/book.controller";
 import {MongoService} from "./database/mongo.service";
+import {PgPoolFactory} from "./factory/pg-pool.factory";
+import {MongoClientFactory} from "./factory/mongo.factory";
 
 export interface IBootstrapReturn {
 	appContainer: Container;
@@ -31,8 +31,8 @@ export interface IBootstrapReturn {
 }
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
-	bind<LoggerInterface>(TYPES.ILogger).to(LoggerService).inSingletonScope();
-	bind<ExceptionFilterInterface>(TYPES.ExeptionFilter).to(ExceptionFilter);
+	bind<LoggerInterface>(TYPES.Logger).to(LoggerService).inSingletonScope();
+	bind<ExceptionFilterInterface>(TYPES.ExceptionFilter).to(ExceptionFilter);
 	bind<MongoService>(TYPES.MongoService).to(MongoService);
 
 
@@ -47,6 +47,10 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<BookService>(TYPES.BookService).to(BookService).inSingletonScope();
 	bind<BookControllerInterface>(TYPES.BookController).to(BookController).inSingletonScope();
 
+	bind<PgPoolFactory>(TYPES.PgPoolFactory).to(PgPoolFactory).inSingletonScope();
+
+
+	bind<MongoClientFactory>(TYPES.MongoClientFactory).to(MongoClientFactory).inSingletonScope();
 
 
 	bind<RolesRepositoryInterface>(TYPES.RolesRepository).to(RolesRepository).inSingletonScope();

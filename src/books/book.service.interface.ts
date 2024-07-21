@@ -1,9 +1,12 @@
-import {BookInterface} from "./book.interface";
+import {BookModel} from "./book.model";
 
 export interface BookServiceInterface {
-    findAll(): Promise<any | null>;
-    findById(id: number): Promise<any | null>;
-    create(book: BookInterface): Promise<BookInterface | null>;
-    //delete(id: number): Promise<null>;
-    //update(id: number, book: BookInterface): Promise<BookInterface | null>;
+    createBook({ title, author, publicationDate, genres }: BookModel): Promise<BookModel | null>
+    getBooks(): Promise<BookModel[] | null>
+    getBookById(id: string): Promise<BookModel | null>
+    updateBook(id: string, bookUpdates: BookModel): Promise<BookModel | null>
+    deleteBook(id: string): Promise<void>
 }
+
+
+//updateBook(id: string, bookUpdates: Partial<BookModel>): Promise<BookModel | null>

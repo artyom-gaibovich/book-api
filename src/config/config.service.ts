@@ -6,8 +6,8 @@ import { TYPES } from '../types';
 
 @injectable()
 export class ConfigService implements ConfigServiceInterface {
-	private config: DotenvParseOutput;
-	constructor(@inject(TYPES.ILogger) private logger: LoggerInterface) {
+	private readonly config: DotenvParseOutput;
+	constructor(@inject(TYPES.Logger) private logger: LoggerInterface) {
 		const result: DotenvConfigOutput = config();
 		if (result.error) {
 			this.logger.error('[ConfigService] cannot read .env');

@@ -1,6 +1,6 @@
-export class BookModel {
-    id: number;
-    author : string;
+export interface BookModel {
     title: string;
-    publication_date: string
+    author: string;
+    publicationDate: string;
+    genres: string[];
 }

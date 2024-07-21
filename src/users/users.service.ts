@@ -7,7 +7,7 @@ import {UsersRepositoryInterface} from './users.repository.interface';
 import {UsersServiceInterface} from './users.service.interface';
 import {UserModel} from "./user.model";
 import {RolesRepositoryInterface} from "../roles/roles.repository.interface";
-import {TypesRoles} from "../roles/role.interface";
+import {TypesRoles} from "../roles/role.types";
 import {ConfigServiceInterface} from "../config/config.service.interface";
 
 @injectable()
@@ -40,7 +40,6 @@ export class UserService implements UsersServiceInterface {
 
 	async findRoles(userId: number) : Promise<TypesRoles[] | void>{
 		const result = await this.rolesRepository.findByUserId(userId)
-		console.log(result?.roles)
 		if (!result) {
 			return;
 		}

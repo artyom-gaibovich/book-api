@@ -1,7 +1,6 @@
 import { IMiddleware } from './middleware.interface';
 import { NextFunction, Request, Response } from 'express';
 import { ClassConstructor, plainToClass } from 'class-transformer';
-import {HTTPError} from "../errors/http-error.class";
 
 export class TransformerMiddleware implements IMiddleware {
     constructor(private classToTransform: ClassConstructor<object>) {}

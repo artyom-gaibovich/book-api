@@ -1,5 +1,4 @@
-import {IsArray, IsNotEmpty, IsString} from "class-validator";
-import {TypesRoles} from "../../roles/role.interface";
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateBookDto {
 
@@ -11,6 +10,7 @@ export class CreateBookDto {
     @IsNotEmpty({ message: 'Author is required.' })
     @IsString()
     author: string;
+
 
     @IsNotEmpty({ message: 'Date is required.' })
     @IsString()

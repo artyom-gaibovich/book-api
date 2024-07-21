@@ -1,12 +1,11 @@
-import {IsArray, IsEmail, IsIn, IsNegative, IsNotEmpty, IsNumber, IsString} from 'class-validator';
-import {TypesRoles} from "../../roles/role.interface";
-import {Transform} from "class-transformer";
+import { IsArray, IsIn, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { TypesRoles } from '../../roles/role.types';
+import { Transform } from 'class-transformer';
 
 export class UpdateRolesDto {
     @IsNotEmpty({ message: 'User ID is required.' })
     @IsNumber({}, { message: 'ID is a only number.' })
     userId: number;
-
 
 
     @IsArray()
