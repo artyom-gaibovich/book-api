@@ -1,8 +1,14 @@
-FROM node:14-alpine
-WORKDIR /opt/app
-ADD package.json package.json
+# Используем официальный образ Node.js 20.12.2
+FROM node:20.12.2-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
 RUN npm install
-ADD . .
+
+COPY . .
+
 RUN npm run build
-RUN npm prune --production
-CMD ["node", "./dist/main.js"]
+
+CMD ["node", "./dist/src/main.js"]

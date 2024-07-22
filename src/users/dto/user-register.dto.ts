@@ -8,5 +8,5 @@ export class UserRegisterDto {
 	password: string;
 
 	@IsString({ message: 'Message is string' })
-	name: string;
+	username: string;
 }

@@ -8,7 +8,7 @@ import { BookControllerInterface } from './book.controller.interface';
 import { NextFunction, Request, Response } from 'express';
 import { CreateBookDto } from './dto/create-book.dto';
 import { BookService } from './book.service';
-import { ValidateMiddleware, ValidateParamIdMiddleware } from '../common/validate.middleware';
+import { ValidateMiddleware, ValidateParamIdIsMongoStringMiddleware } from '../common/validate.middleware';
 import { AuthAdminGuard } from '../common/auth.guard';
 import { UpdateBookDto } from './dto/update-book.dto';
 
@@ -37,14 +37,14 @@ export class BookController extends BaseController implements BookControllerInte
 				path: '/:id',
 				method: 'get',
 				func: this.findById,
-				middlewares: [new ValidateParamIdMiddleware('id')],
+				middlewares: [new ValidateParamIdIsMongoStringMiddleware('id')],
 			},
 			{
 				path: '/:id',
 				method: 'put',
 				func: this.update,
 				middlewares: [
-					new ValidateParamIdMiddleware('id'),
+					new ValidateParamIdIsMongoStringMiddleware('id'),
 					new ValidateMiddleware(UpdateBookDto),
 					new AuthAdminGuard(),
 				],
@@ -53,7 +53,7 @@ export class BookController extends BaseController implements BookControllerInte
 				path: '/:id',
 				method: 'delete',
 				func: this.delete,
-				middlewares: [new ValidateParamIdMiddleware('id'), new AuthAdminGuard()],
+				middlewares: [new ValidateParamIdIsMongoStringMiddleware('id'), new AuthAdminGuard()],
 			},
 		]);
 	}

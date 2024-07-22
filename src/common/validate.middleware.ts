@@ -19,15 +19,31 @@ export class ValidateMiddleware implements MiddlewareInterface {
 	}
 }
 
-export class ValidateParamIdMiddleware implements MiddlewareInterface {
+export class ValidateParamIdIsMongoStringMiddleware implements MiddlewareInterface {
 	constructor(private paramName: string) {}
 
 	execute(req: Request, res: Response, next: NextFunction): void {
 		const paramValue = req.params[this.paramName];
 		if (!ObjectId.isValid(paramValue)) {
-			res.status(400).send({ err: 'Invalid ID format' });
+			res.status(400).send({ err: 'Invalid ID format. ID should be a Mongo String' });
 		} else {
 			next();
 		}
 	}
 }
+
+export class ValidateParamIdIsNumberMiddleware implements MiddlewareInterface {
+	constructor(private paramName: string) {}
+
+	execute(req: Request, res: Response, next: NextFunction): void {
+		const paramValue = req.params[this.paramName];
+		if (isNaN(Number(paramValue))) {
+			res.status(400).send({ err: 'Invalid ID format. ID shout be a Number.' });
+		} else {
+			next();
+		}
+	}
+}
+
+
+

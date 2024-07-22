@@ -11,7 +11,7 @@ export class CreateBookDto {
 
 	@IsNotEmpty({ message: 'Date is required.' })
 	@IsString()
-	publicationDate: string; //While is set string.
+	publicationDate: string; //TODO While is set string.
 
 	@IsArray()
 	@IsString({ each: true })

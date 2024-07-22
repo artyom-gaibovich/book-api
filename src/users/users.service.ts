@@ -19,19 +19,20 @@ export class UserService implements UsersServiceInterface {
 		@inject(TYPES.RolesRepository) private rolesRepository: RolesRepositoryInterface,
 	) {}
 
-	async createUser({ email, name, password }: UserRegisterDto): Promise<UserModel | null> {
-		const newUser = new User(email, name);
+	async createUser({ email, username, password }: UserRegisterDto): Promise<UserModel | null> {
+		const newUser = new User(email, username);
 		const salt = this.configService.get('SALT');
 		await newUser.setPassword(password, Number(salt));
-		const existedUser = await this.usersRepository.find(email);
+		const existedUser = await this.usersRepository.find(username);
 		if (existedUser) {
 			return null;
 		}
 		return this.usersRepository.create(newUser);
 	}
 
-	async validateUser({ email, password }: UserLoginDto): Promise<boolean> {
-		const existedUser = await this.usersRepository.find(email);
+	async validateUser({ username, password }: UserLoginDto): Promise<boolean> {
+		const existedUser = await this.usersRepository.find(username);
+		console.log(existedUser)
 		if (!existedUser) {
 			return false;
 		}
