@@ -14,7 +14,6 @@ import { UsersRepositoryInterface } from './users/users.repository.interface';
 import { UserService } from './users/users.service';
 import { UsersServiceInterface } from './users/users.service.interface';
 import { PgPoolService } from './database/pg-pool.service';
-import { DatabaseConfig } from './database/database.config';
 import { RolesRepositoryInterface } from './roles/roles.repository.interface';
 import { RolesRepository } from './roles/roles.repository';
 import { BookRepository } from './books/book.repository';
@@ -39,6 +38,8 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<UsersControllerInterface>(TYPES.UserController).to(UserController);
 	bind<UsersServiceInterface>(TYPES.UserService).to(UserService);
 
+
+	// TODO Don't forget about indexes
 	bind<ConfigServiceInterface>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 
 	bind<BookRepository>(TYPES.BookRepository).to(BookRepository).inSingletonScope();
@@ -52,7 +53,6 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<RolesRepositoryInterface>(TYPES.RolesRepository).to(RolesRepository).inSingletonScope();
 
 	bind<PgPoolService>(TYPES.DatabaseService).to(PgPoolService).inSingletonScope();
-	bind<DatabaseConfig>(TYPES.DatabaseConfig).to(DatabaseConfig).inSingletonScope();
 
 	bind<App>(TYPES.Application).to(App);
 });

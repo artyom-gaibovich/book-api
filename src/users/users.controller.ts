@@ -8,7 +8,7 @@ import 'reflect-metadata';
 import { UsersControllerInterface } from './users.controller.interface';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
-import { ValidateMiddleware } from '../common/validate.middleware';
+import { ValidateMiddleware, ValidateParamIdIsNumberMiddleware } from '../common/validate.middleware';
 import { sign } from 'jsonwebtoken';
 import { ConfigServiceInterface } from '../config/config.service.interface';
 import { UsersServiceInterface } from './users.service.interface';
@@ -42,7 +42,7 @@ export class UserController extends BaseController implements UsersControllerInt
 				path: '/:id/role',
 				method: 'put',
 				func: this.updateRoles,
-				middlewares: [new ValidateMiddleware(UpdateRolesDto), new AuthAdminGuard()],
+				middlewares: [new ValidateParamIdIsNumberMiddleware('id'), new ValidateMiddleware(UpdateRolesDto), new AuthAdminGuard()],
 			},
 			{
 				path: '/me',
@@ -62,9 +62,12 @@ export class UserController extends BaseController implements UsersControllerInt
 		if (!result) {
 			return next(new HTTPError(401, 'error authorization', 'login'));
 		}
-		const user = (await this.userService.getUserInfo(req.body.email)) as UserModel;
+
+		const user = (await this.userService.getUserInfo(req.body.username)) as UserModel;
+
+
 		const userRoles = (await this.userService.findRoles(user.id)) as TypesRoles[];
-		const jwt = await this.signJWT(userRoles, req.body.email, this.configService.get('SECRET'));
+		const jwt = await this.signJWT(userRoles, req.body.username, this.configService.get('SECRET'));
 		this.ok(res, { jwt });
 	}
 
@@ -93,7 +96,15 @@ export class UserController extends BaseController implements UsersControllerInt
 		const { id } = req.params;
 		const transformRoles = Array.from<TypesRoles>(new Set(req.body.roles));
 		const userRoles = await this.userService.updateRoles(id, transformRoles);
-		this.ok(res, userRoles);
+		if (!userRoles) {
+			this.send(res, 404, {
+				status : 404,
+				message : "User not found"}
+			)
+		}
+		else {
+			this.ok(res, userRoles);
+		}
 	}
 
 	private signJWT(roles: TypesRoles[], email: string, secret: string): Promise<string> {

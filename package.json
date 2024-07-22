@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"type": "commonjs",
 	"scripts": {
-		"start": "node ./dist/main.js",
+		"start": "node ./dist/src/main.js",
 		"dev": "nodemon",
 		"dev:inspect": "nodemon -e ts,json --exec node --inspect=localhost:9222 -r ts-node/register src/main.ts",
 		"lint": "eslint ./src/**",
@@ -15,7 +15,7 @@
 		"lint:fix": "eslint ./src/** --fix",
 		"build": "tsc"
 	},
-	"author": "Anton Larichev",
+	"author": "Artyom Gaibovich",
 	"license": "ISC",
 	"dependencies": {
 		"@prisma/client": "^3.3.0",

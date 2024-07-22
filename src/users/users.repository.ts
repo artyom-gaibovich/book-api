@@ -9,9 +9,9 @@ import { UserModel } from './user.model';
 export class UsersRepository implements UsersRepositoryInterface {
 	constructor(@inject(TYPES.DatabaseService) private databaseService: PgPoolService) {}
 
-	async create({ email, password, name }: User): Promise<UserModel> {
-		const query = 'INSERT INTO users (email, password, name) VALUES ($1, $2, $3) RETURNING *;';
-		const result = await this.databaseService.query(query, [email, password, name]);
+	async create({ email, password, username }: User): Promise<UserModel> {
+		const query = 'INSERT INTO users (email, password, username) VALUES ($1, $2, $3) RETURNING *;';
+		const result = await this.databaseService.query(query, [email, password, username]);
 		if (result.length === 0) {
 			throw new Error('User creation failed');
 		}
@@ -19,9 +19,10 @@ export class UsersRepository implements UsersRepositoryInterface {
 		return user as UserModel;
 	}
 
-	async find(email: string): Promise<UserModel | null> {
-		const query = 'SELECT * FROM users WHERE email = $1;';
-		const result = await this.databaseService.query(query, [email]);
+	async find(username: string): Promise<UserModel | null> {
+		const query = 'SELECT * FROM users WHERE username = $1;';
+		const result = await this.databaseService.query(query, [username]);
+		console.log(result, username)
 		if (result.length === 0) {
 			return null;
 		}

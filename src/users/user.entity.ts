@@ -5,7 +5,7 @@ export class User {
 
 	constructor(
 		private readonly _email: string,
-		private readonly _name: string,
+		private readonly _username: string,
 		passwordHash?: string,
 	) {
 		if (passwordHash) {
@@ -17,8 +17,8 @@ export class User {
 		return this._email;
 	}
 
-	get name(): string {
-		return this._name;
+	get username(): string {
+		return this._username;
 	}
 
 	get password(): string {
