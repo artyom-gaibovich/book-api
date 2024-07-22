@@ -12,7 +12,7 @@ import { ValidateMiddleware } from '../common/validate.middleware';
 import { sign } from 'jsonwebtoken';
 import { ConfigServiceInterface } from '../config/config.service.interface';
 import { UsersServiceInterface } from './users.service.interface';
-import { AuthAdminGuard } from '../common/auth.guard';
+import { AuthAdminGuard, AuthGuard } from '../common/auth.guard';
 import { UpdateRolesDto } from './dto/update-roles.dto';
 import { TypesRoles } from '../roles/role.types';
 import { UserModel } from './user.model';
@@ -39,16 +39,16 @@ export class UserController extends BaseController implements UsersControllerInt
 				middlewares: [new ValidateMiddleware(UserLoginDto)],
 			},
 			{
-				path: '/update-roles',
-				method: 'post',
+				path: '/:id/role',
+				method: 'put',
 				func: this.updateRoles,
 				middlewares: [new ValidateMiddleware(UpdateRolesDto), new AuthAdminGuard()],
 			},
 			{
-				path: '/info',
+				path: '/me',
 				method: 'get',
 				func: this.info,
-				middlewares: [new AuthAdminGuard()],
+				middlewares: [new AuthGuard()],
 			},
 		]);
 	}
@@ -86,12 +86,13 @@ export class UserController extends BaseController implements UsersControllerInt
 	}
 
 	async updateRoles(
-		req: Request<{}, {}, UpdateRolesDto>,
+		req: Request<{id : number}, {}, UpdateRolesDto>,
 		res: Response,
 		_: NextFunction,
 	): Promise<void> {
+		const { id } = req.params;
 		const transformRoles = Array.from<TypesRoles>(new Set(req.body.roles));
-		const userRoles = await this.userService.updateRoles(req.body.userId, transformRoles);
+		const userRoles = await this.userService.updateRoles(id, transformRoles);
 		this.ok(res, userRoles);
 	}
 
