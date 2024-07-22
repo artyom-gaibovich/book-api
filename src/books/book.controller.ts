@@ -16,7 +16,6 @@ import { UpdateBookDto } from './dto/update-book.dto';
 export class BookController extends BaseController implements BookControllerInterface {
 	constructor(
 		@inject(TYPES.Logger) private loggerService: LoggerInterface,
-		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 		@inject(TYPES.BookService) private bookService: BookService,
 	) {
 		super(loggerService);
@@ -78,8 +77,7 @@ export class BookController extends BaseController implements BookControllerInte
 		this.ok(res, { books });
 		this.loggerService.log(`Books retrieved: ${books?.length ? books?.length : 0} books found`);
 	}
-
-	async findById(req: Request<any, {}, {}>, res: Response, _: NextFunction): Promise<void> {
+	async findById(req: Request<{ id : string }, {}, {}>, res: Response, _: NextFunction): Promise<void> {
 		const { id } = req.params;
 		const result = await this.bookService.getBookById(id);
 		this.ok(res, result);
