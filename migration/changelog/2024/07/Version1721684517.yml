@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: version-1721684517
+      author: artyom-gaibovich
+      changes:
+        - sql:
+            sql:
+              CREATE TABLE "user".users (
+                  id SERIAL PRIMARY KEY,
+                  email VARCHAR(255) NOT NULL,
+                  password VARCHAR(255) NOT NULL,
+                  username VARCHAR(255) NOT NULL,
+                  UNIQUE (email),
+                  UNIQUE (username)
+              );

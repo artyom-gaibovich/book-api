@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: version-1721685279
+      author: your_name
+      changes:
+        - sql:
+            sql:
+              CREATE TABLE "user".user_roles (
+                  user_id INTEGER NOT NULL,
+                  role_value VARCHAR(5) NOT NULL,
+                  FOREIGN KEY (user_id) REFERENCES "user".users(id) ON DELETE CASCADE,
+                  FOREIGN KEY (role_value) REFERENCES "user".roles(value) ON DELETE CASCADE,
+                  PRIMARY KEY (user_id, role_value)
+              );

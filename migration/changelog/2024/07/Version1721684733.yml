@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: version-1721684733
+      author: artyom-gaibovich
+      changes:
+        - sql:
+            sql:
+              CREATE UNIQUE INDEX idx_users_email ON "user".users(email);
+

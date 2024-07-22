@@ -1,4 +1,3 @@
-# Используем официальный образ Node.js 20.12.2
 FROM node:20.12.2-alpine
 
 WORKDIR /app

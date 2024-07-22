@@ -1,39 +1,26 @@
 version: "3.8"
+
 services:
   postgresql:
     image: postgres:16-alpine
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
+    environment:
+      POSTGRES_PASSWORD: ${DB_USER}
+      POSTGRES_USER: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     env_file:
       - .env
+    networks:
+      - internal
     volumes:
+      - ./dump:/home/dump
       - ./data/postgresql:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U admin" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
-
-
-
-
-
-
-
-
-
-  mongo:
-    image: mongo
-    container_name: mongo
-    restart: always
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
-    ports:
-      - 27017:27017
-    volumes:
-      - ./data:/data/db
-
 networks:
   internal:
     name: ${APP_NAME}-net

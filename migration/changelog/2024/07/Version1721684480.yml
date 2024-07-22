@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: version-1721684480
+      author: artyom-gaibovich
+      changes:
+        - sql:
+            sql:
+              CREATE SCHEMA IF NOT EXISTS "user";

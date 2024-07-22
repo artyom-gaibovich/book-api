@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: version-1721684737
+      author: artyom-gaibovich
+      changes:
+        - sql:
+            sql:
+              CREATE UNIQUE INDEX idx_users_username ON "user".users(username);
+
