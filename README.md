@@ -167,7 +167,7 @@ Response:
 ```http request
 PUT http://localhost:8000/books/669f25c9d130d3d3db3cb8e1
 ```
-Request:
+Response:
 ```json
 
 ```
