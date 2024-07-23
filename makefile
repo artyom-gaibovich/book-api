@@ -2,8 +2,12 @@ ifneq ("$(wildcard .env)","")
     include .env
 endif
 
+copy:
+	cp .env.sample .env
+
 init:
 	cp -n .env.sample .env
+
 up:
 	@docker compose up -d --remove-orphans
 
@@ -15,6 +19,12 @@ exec:
 
 restart:
 	make down && make up
+
+dev:
+	npm run dev
+
+prod:
+	npm run build && npm run start
 
 exec:
 	docker run --rm -it --entrypoint=/bin/bash -v $$PWD/migration/changelog:/liquibase/changelog \
