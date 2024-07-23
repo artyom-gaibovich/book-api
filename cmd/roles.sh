@@ -1,3 +1,0 @@
-CREATE TABLE roles (
-    value VARCHAR(5) PRIMARY KEY
-);
