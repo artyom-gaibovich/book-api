@@ -16,7 +16,6 @@ Use this JWT token,for creating user and then you can change roles:
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6W3sidXNlcl9pZCI6MjMsInJvbGVfdmFsdWUiOiJBRE1JTiJ9XSwidXNlcm5hbWUiOiJnZ2ZkZ2RnZCIsImlhdCI6MTcyMTY5ODMzOX0.Dk8oW_E1ZhxqQCxSM3osarusXjNJ1B8t3Iz0QFLYUsU
 ```
-
 ## API Documentation
 
 ## 1. Add a Book
@@ -171,7 +170,6 @@ Response:
 ```json
 
 ```
-
 ## 6. Register a User
 - **HTTP Method:** POST
 - **Endpoint:** `/users/register`
@@ -226,7 +224,6 @@ Response:
 - **Endpoint:** `/users/me`
 - **Response:** JSON with the current user's data
 - **Authentication Required:** Yes
-### **Example**
 ```http request
 GET http://localhost:8000/users/me
 ```
