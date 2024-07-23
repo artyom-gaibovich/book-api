@@ -5,6 +5,7 @@ import { ExpressReturnType, IControllerRoute } from './route.interface';
 
 export { Router } from 'express';
 import 'reflect-metadata';
+import { SuccessCodes } from '../constnats/success.constants';
 
 @injectable()
 export abstract class BaseController {
@@ -24,11 +25,7 @@ export abstract class BaseController {
 	}
 
 	public ok<T>(res: Response, message: T): ExpressReturnType {
-		return this.send<T>(res, 200, message);
-	}
-
-	public created<T>(res: Response): ExpressReturnType {
-		return res.sendStatus(201);
+		return this.send<T>(res, SuccessCodes.OK, message);
 	}
 
 	protected bindRoutes(routes: IControllerRoute[]): void {

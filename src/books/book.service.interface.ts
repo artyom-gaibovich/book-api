@@ -1,4 +1,5 @@
 import { BookModel } from './book.model';
+import { DeleteResult } from 'mongodb';
 
 export interface BookServiceInterface {
 	createBook({ title, author, publicationDate, genres }: BookModel): Promise<BookModel | null>;
@@ -9,5 +10,5 @@ export interface BookServiceInterface {
 
 	updateBook(id: string, bookUpdates: BookModel): Promise<BookModel | null>;
 
-	deleteBook(id: string): Promise<void>;
+	deleteBook(id: string): Promise<DeleteResult>;
 }

@@ -1,8 +1,7 @@
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { UserModel } from './user.model';
-import { TypesRoles } from '../roles/role.types';
-import { UserToRolesInterface } from '../roles/user-to-roles.interface';
+import { TypesRoles, UserToRolesInterface } from '../roles/role.model';
 
 export interface UsersServiceInterface {
 	findRoles(userId: number): Promise<TypesRoles[] | null>;

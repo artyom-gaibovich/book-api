@@ -13,12 +13,15 @@ import {
 } from '../common/validate.middleware';
 import { AuthAdminGuard } from '../common/auth.guard';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { ErrorCodes } from '../constnats/error.constants';
+import { RolesServiceInterface } from '../roles/roles.service.interface';
 
 @injectable()
 export class BookController extends BaseController implements BookControllerInterface {
 	constructor(
 		@inject(TYPES.Logger) private loggerService: LoggerInterface,
 		@inject(TYPES.BookService) private bookService: BookService,
+		@inject(TYPES.RolesService) private rolesService: RolesServiceInterface,
 	) {
 		super(loggerService, 'books');
 		this.bindRoutes([
@@ -26,7 +29,7 @@ export class BookController extends BaseController implements BookControllerInte
 				path: '',
 				method: 'post',
 				func: this.create,
-				middlewares: [new ValidateMiddleware(CreateBookDto), new AuthAdminGuard()],
+				middlewares: [new ValidateMiddleware(CreateBookDto), new AuthAdminGuard(rolesService)],
 			},
 			{
 				path: '',
@@ -47,14 +50,17 @@ export class BookController extends BaseController implements BookControllerInte
 				middlewares: [
 					new ValidateParamIdIsMongoStringMiddleware('id'),
 					new ValidateMiddleware(UpdateBookDto),
-					new AuthAdminGuard(),
+					new AuthAdminGuard(rolesService),
 				],
 			},
 			{
 				path: '/:id',
 				method: 'delete',
 				func: this.delete,
-				middlewares: [new ValidateParamIdIsMongoStringMiddleware('id'), new AuthAdminGuard()],
+				middlewares: [
+					new ValidateParamIdIsMongoStringMiddleware('id'),
+					new AuthAdminGuard(rolesService),
+				],
 			},
 		]);
 	}
@@ -69,8 +75,16 @@ export class BookController extends BaseController implements BookControllerInte
 	async delete(req: Request, res: Response, _: NextFunction): Promise<void> {
 		const { id } = req.params;
 		const result = await this.bookService.deleteBook(id);
-		this.ok(res, result);
-		this.loggerService.log(`Delete book: ID ${id}`);
+		if (result.deletedCount === 0) {
+			this.loggerService.error(` Book : ID ${id} doesnt exists`);
+			this.send(res, ErrorCodes.NotFound, {
+				status: ErrorCodes.NotFound,
+				message: 'Book doesnt exists',
+			});
+		} else {
+			this.ok(res, result);
+			this.loggerService.log(`Delete book: ID ${id}`);
+		}
 	}
 
 	async findAll(_: Request, res: Response, __: NextFunction): Promise<void> {
@@ -86,8 +100,16 @@ export class BookController extends BaseController implements BookControllerInte
 	): Promise<void> {
 		const { id } = req.params;
 		const result = await this.bookService.getBookById(id);
-		this.ok(res, result);
-		this.loggerService.log(`Find book by ID: ID ${id}, Result: ${JSON.stringify(result)}`);
+		if (!result) {
+			this.loggerService.error(` Book with id ${id} not found`);
+			this.send(res, ErrorCodes.NotFound, {
+				status: ErrorCodes.NotFound,
+				message: ` Book with id ${id} not found`,
+			});
+		} else {
+			this.ok(res, result);
+			this.loggerService.log(`Find book by ID: ${id}, Result: ${JSON.stringify(result)}`);
+		}
 	}
 
 	async update(req: Request, res: Response, _: NextFunction): Promise<void> {
@@ -99,7 +121,15 @@ export class BookController extends BaseController implements BookControllerInte
 			publicationDate,
 			genres,
 		});
-		this.ok(res, result);
-		this.loggerService.log(`Update book: ID ${id}, Data: ${JSON.stringify(req.body)}`);
+		if (!result) {
+			this.loggerService.error(` Book with id ${id} not found`);
+			this.send(res, ErrorCodes.NotFound, {
+				status: ErrorCodes.NotFound,
+				message: ` Book with id ${id} not found`,
+			});
+		} else {
+			this.ok(res, result);
+			this.loggerService.log(`Update book: ID ${id}, Data: ${JSON.stringify(req.body)}`);
+		}
 	}
 }

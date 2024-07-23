@@ -1,7 +1,8 @@
 import { BookModel } from './book.model';
+import { DeleteResult } from 'mongodb';
 
 export interface BookRepositoryInterface {
-	deleteBook(id: string): Promise<void>;
+	deleteBook(id: string): Promise<DeleteResult>;
 
 	getBooks(): Promise<BookModel[]>;
 

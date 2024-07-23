@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import { MongoClient } from 'mongodb';
 import { TYPES } from '../types';
 import { LoggerInterface } from '../logger/logger.interface';
-import { MongoClientFactory } from '../factory/mongo.factory';
+import { MongoClientFactory } from '../factory/mongo/mongo.factory';
 
 @injectable()
 export class MongoService {

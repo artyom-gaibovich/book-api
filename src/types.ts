@@ -1,3 +1,5 @@
+import { RoutesService } from './routes/routes.service';
+
 export const TYPES = {
 	Application: Symbol.for('Application'),
 	Logger: Symbol.for('Logger'),
@@ -17,10 +19,14 @@ export const TYPES = {
 
 	ExceptionFilter: Symbol.for('ExceptionFilter'),
 	ConfigService: Symbol.for('ConfigService'),
-	PrismaService: Symbol.for('PrismaService'),
+
+	RoutesService: Symbol.for('RoutesService'),
+
 	DatabaseService: Symbol.for('DatabaseService'),
 	UsersRepository: Symbol.for('UsersRepository'),
 	RolesRepository: Symbol.for('RolesRepository'),
+	RolesService: Symbol.for('RolesService'),
+
 	DatabaseConfig: Symbol.for('DatabaseConfig'),
 
 	PgPoolFactory: Symbol.for('PgPoolFactory'),

@@ -1,4 +1,4 @@
-import { TypesRoles } from './role.types';
+export type TypesRoles = 'ADMIN' | 'USER';
 
 export interface UserToRolesInterface {
 	userId: number;

@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { MongoService } from '../database/mongo.service';
 import { TYPES } from '../types';
-import { ObjectId } from 'mongodb';
+import { DeleteResult, ObjectId } from 'mongodb';
 import { BookModel } from './book.model';
 import { BookServiceInterface } from './book.service.interface';
 import { BookRepositoryInterface } from './book.repository.interface';
@@ -50,9 +50,9 @@ export class BookRepository implements BookRepositoryInterface {
 			.findOne<BookModel>({ _id: new ObjectId(id) });
 	}
 
-	async deleteBook(id: string): Promise<void> {
+	async deleteBook(id: string): Promise<DeleteResult> {
 		const mongoClient = await this.mongoService.get();
-		await mongoClient
+		return await mongoClient
 			.db('admin')
 			.collection('books')
 			.deleteOne({ _id: new ObjectId(id) });

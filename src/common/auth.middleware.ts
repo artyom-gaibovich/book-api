@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 import { injectable } from 'inversify';
+import { ErrorCodes } from '../constnats/error.constants';
 
 @injectable()
 export class AuthMiddleware {
-	constructor(private secret: string, private ignoreJWTRoutes: string[]) {}
+	constructor(private secret: string, private ignoreJWTRoutes: string[]) {
+	}
 
 	execute(req: Request, res: Response, next: NextFunction): void {
 		if (this.ignoreJWTRoutes.includes(req.originalUrl)) {
@@ -19,10 +21,14 @@ export class AuthMiddleware {
 					req.username = payload.username;
 					req.roles = payload.roles.map((role: any) => role.role_value);
 					if (!req.roles) {
-						return res.status(400).send({ err: 'Invalid JWT TOKEN. Dont set roles' });
+						return res
+							.status(ErrorCodes.Forbidden)
+							.send({ err: 'Invalid JWT TOKEN. Dont set roles' });
 					}
 					if (!req.username) {
-						return res.status(400).send({ err: 'Invalid JWT TOKEN. Dont set username' });
+						return res
+							.status(ErrorCodes.Forbidden)
+							.send({ err: 'Invalid JWT TOKEN. Dont set username' });
 					}
 					if (req.username || req.roles) {
 						return next();
@@ -30,7 +36,7 @@ export class AuthMiddleware {
 				}
 			});
 		} else {
-			res.status(400).send({ error: 'Invalid JWT TOKEN' });
+			res.status(ErrorCodes.Forbidden).send({ error: 'Invalid JWT TOKEN' });
 		}
 	}
 }
