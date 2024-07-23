@@ -10,6 +10,7 @@ import { RolesRepositoryInterface } from '../roles/roles.repository.interface';
 import { TypesRoles } from '../roles/role.types';
 import { ConfigServiceInterface } from '../config/config.service.interface';
 import { UserToRolesInterface } from '../roles/user-to-roles.interface';
+import { UsersRepository } from './users.repository';
 
 @injectable()
 export class UserService implements UsersServiceInterface {
@@ -23,11 +24,13 @@ export class UserService implements UsersServiceInterface {
 		const newUser = new User(email, username);
 		const salt = this.configService.get('SALT');
 		await newUser.setPassword(password, Number(salt));
-		const existedUser = await this.usersRepository.find(username);
+		const existedUser = await this.usersRepository.find(username, email);
 		if (existedUser) {
 			return null;
 		}
-		return this.usersRepository.create(newUser);
+		const createdUser = await this.usersRepository.create(newUser);
+		await this.rolesRepository.create(createdUser.id, ['USER']);
+		return createdUser;
 	}
 
 	async validateUser({ username, password }: UserLoginDto): Promise<boolean> {
@@ -47,8 +50,8 @@ export class UserService implements UsersServiceInterface {
 		return result.roles;
 	}
 
-	async getUserInfo(email: string): Promise<UserModel | null> {
-		return this.usersRepository.find(email);
+	async getUserInfo(username: string): Promise<UserModel | null> {
+		return this.usersRepository.find(username);
 	}
 
 	async updateRoles(userId: number, newRoles: TypesRoles[]): Promise<UserToRolesInterface | null> {

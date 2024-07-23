@@ -13,16 +13,13 @@ export class UsersRepository implements UsersRepositoryInterface {
 		const query =
 			'INSERT INTO "user".users (email, password, username) VALUES ($1, $2, $3) RETURNING *;';
 		const result = await this.databaseService.query(query, [email, password, username]);
-		if (!result) {
-			throw new Error('User creation failed');
-		}
 		const user = result[0];
 		return user as UserModel;
 	}
 
-	async find(username: string): Promise<UserModel | null> {
-		const query = 'SELECT * FROM "user".users WHERE username = $1;';
-		const result = await this.databaseService.query(query, [username]);
+	async find(username: string, email?: string): Promise<UserModel | null> {
+		const query = 'SELECT * FROM "user".users WHERE username = $1 OR email = $2;';
+		const result = await this.databaseService.query(query, [username, email]);
 		if (!result) {
 			return null;
 		}

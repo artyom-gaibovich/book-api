@@ -36,7 +36,7 @@ export class PgPoolService {
 			const res = await client.query(query, params);
 			return res.rows;
 		} catch (e) {
-			this.logger.log('[PgPoolService] Error when you make query');
+			this.logger.log(`[PgPoolService] Error when you make query ${e}`);
 		} finally {
 			client.release();
 		}
