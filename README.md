@@ -224,6 +224,7 @@ Response:
 - **Endpoint:** `/users/me`
 - **Response:** JSON with the current user's data
 - **Authentication Required:** Yes
+### **Example**
 ```http request
 GET http://localhost:8000/users/me
 ```
