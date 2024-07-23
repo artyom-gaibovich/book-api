@@ -12,6 +12,7 @@ import { AuthMiddleware } from './common/auth.middleware';
 import { PgPoolService } from './database/pg-pool.service';
 import { MongoService } from './database/mongo.service';
 import { BookController } from './books/book.controller';
+import { RoutesServiceInterface } from './routes/routes.service.interface';
 
 @injectable()
 export class App {
@@ -27,6 +28,7 @@ export class App {
 		@inject(TYPES.BookController) private bookController: BookController,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: ExceptionFilterInterface,
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
+		@inject(TYPES.RoutesService) private routesService: RoutesServiceInterface,
 	) {
 		this.app = express();
 		this.port = Number(this.configService.get('APP_PORT'));
@@ -35,15 +37,15 @@ export class App {
 	useMiddleware(): void {
 		this.app.use(json());
 		const authMiddleware = new AuthMiddleware(this.configService.get('SECRET'), [
-			'/users/login',
-			'/users/register',
+			this.routesService.login(),
+			this.routesService.register(),
 		]);
 		this.app.use(authMiddleware.execute.bind(authMiddleware));
 	}
 
 	useRoutes(): void {
-		this.app.use('/users', this.userController.router);
-		this.app.use('/books', this.bookController.router);
+		this.app.use(this.routesService.users(), this.userController.router);
+		this.app.use(this.routesService.books(), this.bookController.router);
 	}
 
 	useExceptionFilters(): void {

@@ -21,8 +21,10 @@ import { BookService } from './books/book.service';
 import { BookControllerInterface } from './books/book.controller.interface';
 import { BookController } from './books/book.controller';
 import { MongoService } from './database/mongo.service';
-import { PgPoolFactory } from './factory/pg-pool.factory';
-import { MongoClientFactory } from './factory/mongo.factory';
+import { PgPoolFactory } from './factory/postgres/pg-pool.factory';
+import { MongoClientFactory } from './factory/mongo/mongo.factory';
+import { RolesService } from './roles/roles.service';
+import { RoutesService } from './routes/routes.service';
 
 export interface IBootstrapReturn {
 	appContainer: Container;
@@ -43,6 +45,9 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<BookRepository>(TYPES.BookRepository).to(BookRepository).inSingletonScope();
 	bind<BookService>(TYPES.BookService).to(BookService).inSingletonScope();
 	bind<BookControllerInterface>(TYPES.BookController).to(BookController).inSingletonScope();
+
+	bind<RolesService>(TYPES.RolesService).to(RolesService).inSingletonScope();
+	bind<RoutesService>(TYPES.RoutesService).to(RoutesService).inSingletonScope();
 
 	bind<PgPoolFactory>(TYPES.PgPoolFactory).to(PgPoolFactory).inSingletonScope();
 

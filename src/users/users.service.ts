@@ -7,9 +7,10 @@ import { UsersRepositoryInterface } from './users.repository.interface';
 import { UsersServiceInterface } from './users.service.interface';
 import { UserModel } from './user.model';
 import { RolesRepositoryInterface } from '../roles/roles.repository.interface';
-import { TypesRoles } from '../roles/role.types';
+import { TypesRoles, UserToRolesInterface } from '../roles/role.model';
 import { ConfigServiceInterface } from '../config/config.service.interface';
-import { UserToRolesInterface } from '../roles/user-to-roles.interface';
+import { RolesService } from '../roles/roles.service';
+import { RolesServiceInterface } from '../roles/roles.service.interface';
 
 @injectable()
 export class UserService implements UsersServiceInterface {
@@ -17,6 +18,7 @@ export class UserService implements UsersServiceInterface {
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 		@inject(TYPES.UsersRepository) private usersRepository: UsersRepositoryInterface,
 		@inject(TYPES.RolesRepository) private rolesRepository: RolesRepositoryInterface,
+		@inject(TYPES.RolesService) private rolesService: RolesServiceInterface,
 	) {}
 
 	async createUser({ email, username, password }: UserRegisterDto): Promise<UserModel | null> {
@@ -28,7 +30,7 @@ export class UserService implements UsersServiceInterface {
 			return null;
 		}
 		const createdUser = await this.usersRepository.create(newUser);
-		await this.rolesRepository.create(createdUser.id, ['USER']);
+		await this.rolesRepository.create(createdUser.id, [this.rolesService.getUserRole()]);
 		return createdUser;
 	}
 

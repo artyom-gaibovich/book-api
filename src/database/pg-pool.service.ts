@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { Pool } from 'pg';
 import { TYPES } from '../types';
 import { LoggerInterface } from '../logger/logger.interface';
-import { PgPoolFactory } from '../factory/pg-pool.factory';
+import { PgPoolFactory } from '../factory/postgres/pg-pool.factory';
 
 @injectable()
 export class PgPoolService {

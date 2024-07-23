@@ -1,5 +1,5 @@
 import { IsArray, IsIn, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { TypesRoles } from '../../roles/role.types';
+import { TypesRoles } from '../../roles/role.model';
 import { Transform } from 'class-transformer';
 
 export class UpdateRolesDto {

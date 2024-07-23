@@ -17,7 +17,7 @@ import { ConfigServiceInterface } from '../config/config.service.interface';
 import { UsersServiceInterface } from './users.service.interface';
 import { AuthAdminGuard, AuthGuard } from '../common/auth.guard';
 import { UpdateRolesDto } from './dto/update-roles.dto';
-import { TypesRoles } from '../roles/role.types';
+import { TypesRoles } from '../roles/role.model';
 import { UserModel } from './user.model';
 
 @injectable()

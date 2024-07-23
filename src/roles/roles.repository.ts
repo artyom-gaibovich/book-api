@@ -2,8 +2,7 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
 import { PgPoolService } from '../database/pg-pool.service';
 import { RolesRepositoryInterface } from './roles.repository.interface';
-import { UserToRolesInterface } from './user-to-roles.interface';
-import { TypesRoles } from './role.types';
+import { TypesRoles, UserToRolesInterface } from './role.model';
 
 @injectable()
 export class RolesRepository implements RolesRepositoryInterface {

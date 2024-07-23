@@ -69,8 +69,13 @@ export class BookController extends BaseController implements BookControllerInte
 	async delete(req: Request, res: Response, _: NextFunction): Promise<void> {
 		const { id } = req.params;
 		const result = await this.bookService.deleteBook(id);
-		this.ok(res, result);
-		this.loggerService.log(`Delete book: ID ${id}`);
+		if (result.deletedCount === 0) {
+			this.loggerService.error(` Book : ID ${id} doesnt exists`);
+			this.send(res, 404, { status: 404, message: "Book doesn't exists" });
+		} else {
+			this.ok(res, result);
+			this.loggerService.log(`Delete book: ID ${id}`);
+		}
 	}
 
 	async findAll(_: Request, res: Response, __: NextFunction): Promise<void> {
@@ -86,6 +91,10 @@ export class BookController extends BaseController implements BookControllerInte
 	): Promise<void> {
 		const { id } = req.params;
 		const result = await this.bookService.getBookById(id);
+		if (!result) {
+			this.loggerService.error(` Book with id ${id} not found`);
+			this.send(res, 404, ` Book with id ${id} not found`);
+		}
 		this.ok(res, result);
 		this.loggerService.log(`Find book by ID: ID ${id}, Result: ${JSON.stringify(result)}`);
 	}

@@ -1,5 +1,4 @@
-import { UserToRolesInterface } from './user-to-roles.interface';
-import { TypesRoles } from './role.types';
+import { TypesRoles, UserToRolesInterface } from './role.model';
 
 export interface RolesRepositoryInterface {
 	findByUserId(userId: number): Promise<UserToRolesInterface | null>;

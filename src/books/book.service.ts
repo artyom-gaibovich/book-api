@@ -4,6 +4,7 @@ import { TYPES } from '../types';
 import { BookRepository } from './book.repository';
 import { BookServiceInterface } from './book.service.interface';
 import { BookModel } from './book.model';
+import { DeleteResult } from 'mongodb';
 
 @injectable()
 export class BookService implements BookServiceInterface {
@@ -31,7 +32,7 @@ export class BookService implements BookServiceInterface {
 		return this.bookRepository.updateBook(id, bookUpdates);
 	}
 
-	async deleteBook(id: string): Promise<void> {
-		await this.bookRepository.deleteBook(id);
+	async deleteBook(id: string): Promise<DeleteResult> {
+		return await this.bookRepository.deleteBook(id);
 	}
 }
