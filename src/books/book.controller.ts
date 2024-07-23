@@ -34,7 +34,6 @@ export class BookController extends BaseController implements BookControllerInte
 				func: this.findAll,
 				middlewares: [],
 			},
-
 			{
 				path: '/:id',
 				method: 'get',
@@ -64,21 +63,22 @@ export class BookController extends BaseController implements BookControllerInte
 		const { title, author, publicationDate, genres } = req.body;
 		const result = await this.bookService.createBook({ title, author, publicationDate, genres });
 		this.ok(res, result);
-		this.loggerService.log(`Book created: ${JSON.stringify(result)}`);
+		this.loggerService.log(`Create book: ${JSON.stringify(result)}`);
 	}
 
 	async delete(req: Request, res: Response, _: NextFunction): Promise<void> {
 		const { id } = req.params;
 		const result = await this.bookService.deleteBook(id);
 		this.ok(res, result);
-		this.loggerService.log(`Book deleted: ID ${id}`);
+		this.loggerService.log(`Delete book: ID ${id}`);
 	}
 
-	async findAll(_: Request, res: Response, __: NextFunction): Promise<any> {
+	async findAll(_: Request, res: Response, __: NextFunction): Promise<void> {
 		const books = await this.bookService.getBooks();
 		this.ok(res, { books });
-		this.loggerService.log(`Books retrieved: ${books?.length ? books?.length : 0} books found`);
+		this.loggerService.log(`Find all books: ${books?.length ? books?.length : 0} found`);
 	}
+
 	async findById(
 		req: Request<{ id: string }, {}, {}>,
 		res: Response,
@@ -87,7 +87,7 @@ export class BookController extends BaseController implements BookControllerInte
 		const { id } = req.params;
 		const result = await this.bookService.getBookById(id);
 		this.ok(res, result);
-		this.loggerService.log(`Book retrieved: ${JSON.stringify(result)}`);
+		this.loggerService.log(`Find book by ID: ID ${id}, Result: ${JSON.stringify(result)}`);
 	}
 
 	async update(req: Request, res: Response, _: NextFunction): Promise<void> {
@@ -100,6 +100,6 @@ export class BookController extends BaseController implements BookControllerInte
 			genres,
 		});
 		this.ok(res, result);
-		this.loggerService.log(`Book updated: ID ${id}, Data: ${JSON.stringify(req.body)}`);
+		this.loggerService.log(`Update book: ID ${id}, Data: ${JSON.stringify(req.body)}`);
 	}
 }

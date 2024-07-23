@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { IS_DATE_STRING, IsArray, IsDate, IsDateString, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateBookDto {
 	@IsNotEmpty({ message: 'Title is required.' })
@@ -10,7 +10,7 @@ export class CreateBookDto {
 	author: string;
 
 	@IsNotEmpty({ message: 'Date is required.' })
-	@IsString()
+	@IsDateString()
 	publicationDate: string; //TODO While is set string.
 
 	@IsArray()

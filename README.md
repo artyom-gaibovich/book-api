@@ -24,28 +24,150 @@ When you will make migrations, use  PG_HOST=postgresql
 - **Request Body:** JSON with fields `title`, `author`, `publicationDate`, `genres`
 - **Response:** JSON with the added book's data
 - **Authentication Required:** Yes (only for users with the role "administrator")
-
+- **Example**
+```http request
+POST http://localhost:8000/books/
+```
+Request Body:
+```json
+{
+  "publicationDate": "2024-07-23T14:30:00+03:00",
+  "author" : "Artyom_gaibovich",
+  "title" : "book-api",
+  "genres" : ["backend", "frontend", "devops"]
+}
+```
+Response:
+```json
+{
+  "_id": "669f27bbc4d82a7f4822c67c",
+  "title": "book-api",
+  "author": "Artyom_gaibovich",
+  "publicationDate": "2024-07-23T14:30:00+03:00",
+  "genres": [
+    "backend",
+    "frontend",
+    "devops"
+  ]
+}
+```
 ## 2. Get List of Books
 - **HTTP Method:** GET
 - **Endpoint:** `/books`
 - **Response:** JSON array with data of all books
-
+```http request
+GET http://localhost:8000/books/669f25c9d130d3d3db3cb8e1
+```
+Response:
+```json
+{
+  "books": [
+    {
+      "_id": "669f25c9d130d3d3db3cb8e1",
+      "title": "book-api",
+      "author": "Artyom_gaibovich",
+      "publicationDate": "2024-07-23T14:30:00+03:00",
+      "genres": [
+        "backend",
+        "frontend",
+        "devops"
+      ]
+    },
+    {
+      "_id": "669f26c129b3a65a0f53740f",
+      "title": "book-api",
+      "author": "Artyom_gaibovich",
+      "publicationDate": "2024-07-23T14:30:00+03:00",
+      "genres": [
+        "backend",
+        "frontend",
+        "devops"
+      ]
+    },
+    {
+      "_id": "669f27bbc4d82a7f4822c67c",
+      "title": "book-api",
+      "author": "Artyom_gaibovich",
+      "publicationDate": "2024-07-23T14:30:00+03:00",
+      "genres": [
+        "backend",
+        "frontend",
+        "devops"
+      ]
+    }
+  ]
+}
+```
 ## 3. Get a Book by ID
 - **HTTP Method:** GET
 - **Endpoint:** `/books/:id`
 - **Response:** JSON with the book's data
-
+```http request
+GET http://localhost:8000/books/669f25c9d130d3d3db3cb8e1
+```
+Response:
+```json
+{
+  "_id": "669f25c9d130d3d3db3cb8e1",
+  "title": "book-api",
+  "author": "Artyom_gaibovich",
+  "publicationDate": "31-14-15",
+  "genres": [
+    "backend",
+    "frontend",
+    "devops"
+  ]
+}
+```
 ## 4. Update Book Information
 - **HTTP Method:** PUT
 - **Endpoint:** `/books/:id`
 - **Request Body:** JSON with fields `title`, `author`, `publicationDate`, `genres`
 - **Response:** JSON with the updated book's data
 - **Authentication Required:** Yes (only for users with the role "administrator")
+```http request
+PUT http://localhost:8000/books/669f25c9d130d3d3db3cb8e1
+```
+Request:
+```json
+{
+  "title": "book-api",
+  "author": "Artyom_gaibovich",
+  "publicationDate": "31-14-15",
+  "genres": [
+    "Backend",
+    "Frontend",
+    "Devops"
+  ]
+}
+```
+Response:
+```json
+{
+  "_id": "669f25c9d130d3d3db3cb8e1",
+  "title": "book-api",
+  "author": "Artyom_gaibovich",
+  "publicationDate": "31-14-15",
+  "genres": [
+    "Backend",
+    "Frontend",
+    "DevOps"
+  ]
+}
+```
+
 
 ## 5. Delete a Book
 - **HTTP Method:** DELETE
 - **Endpoint:** `/books/:id`
 - **Authentication Required:** Yes (only for users with the role "administrator")
+```http request
+PUT http://localhost:8000/books/669f25c9d130d3d3db3cb8e1
+```
+Request:
+```json
+
+```
 
 ## 6. Register a User
 - **HTTP Method:** POST
@@ -56,7 +178,7 @@ When you will make migrations, use  PG_HOST=postgresql
 - **Example**
 - 
 ```http request
-PUT http://localhost:8000/users/register
+POST http://localhost:8000/users/register
 ```
 Request Body:
 ```json
@@ -82,7 +204,7 @@ Response:
 - **Response:** JSON with a JWT token
 - **Example**
 ```http request
-PUT http://localhost:8000/users/login
+POST http://localhost:8000/users/login
 ```
 Request Body:
 ```json
