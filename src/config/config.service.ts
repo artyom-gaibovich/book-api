@@ -11,9 +11,9 @@ export class ConfigService implements ConfigServiceInterface {
 	constructor(@inject(TYPES.Logger) private logger: LoggerInterface) {
 		const result: DotenvConfigOutput = config();
 		if (result.error) {
-			this.logger.error('[ConfigService] cannot read .env');
+			this.logger.error('[ ConfigService ] cannot read .env');
 		} else {
-			this.logger.log('[ConfigService] Configuration .env has been loaded');
+			this.logger.log('[ ConfigService ] Configuration .env has been loaded');
 			this.config = result.parsed as DotenvParseOutput;
 		}
 	}

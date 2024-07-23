@@ -83,14 +83,18 @@ export class UserController extends BaseController implements UsersControllerInt
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
-		this.loggerService.log('[register] Attempting to register new user');
-		const result = await this.userService.createUser(body);
-		if (!result) {
-			this.loggerService.log('[register] User already exists');
-			return next(new HTTPError(409, 'User is already exists'));
+		this.loggerService.log('[ register ] Attempting to register new user');
+		const user = await this.userService.createUser(body);
+		if (!user) {
+			this.loggerService.log('[ register ] User already exists');
+			return next(new HTTPError(409, 'User is already exists', 'register'));
 		}
-		this.loggerService.log(`[register] User registered successfully with ID ${result.id}`);
-		this.send(res, 201, { email: result.email, id: result.id });
+		this.loggerService.log(`[ register ] User registered successfully with ID ${user.id}`);
+		this.send(res, 201, {
+			username: user.username,
+			email: user.email,
+			id: user.id,
+		});
 	}
 
 	async info(
@@ -98,12 +102,12 @@ export class UserController extends BaseController implements UsersControllerInt
 		res: Response,
 		_: NextFunction,
 	): Promise<void> {
-		this.loggerService.log(`[info] Fetching info for user ${username}`);
+		this.loggerService.log(`[ info ] Fetching info for user ${username}`);
 		const userInfo = await this.userService.getUserInfo(username);
-		this.loggerService.log(`[info] User info retrieved for ${username}`);
+		this.loggerService.log(`[ info ] User info retrieved for ${username}`);
 		this.ok(res, {
 			username: userInfo?.username,
-			mail: userInfo?.email,
+			email: userInfo?.email,
 			id: userInfo?.id,
 			roles: roles,
 		});
@@ -114,18 +118,20 @@ export class UserController extends BaseController implements UsersControllerInt
 		res: Response,
 		_: NextFunction,
 	): Promise<void> {
-		this.loggerService.log(`[updateRoles] Attempting to update roles for user ID ${req.params.id}`);
+		this.loggerService.log(
+			`[ updateRoles ] Attempting to update roles for user ID ${req.params.id}`,
+		);
 		const { id } = req.params;
 		const transformRoles = Array.from<TypesRoles>(new Set(req.body.roles));
 		const userRoles = await this.userService.updateRoles(id, transformRoles);
 		if (!userRoles) {
-			this.loggerService.log(`[updateRoles] User with ID ${id} not found`);
+			this.loggerService.log(`[ updateRoles ] User with ID ${id} not found`);
 			this.send(res, 404, {
 				status: 404,
 				message: 'User not found',
 			});
 		} else {
-			this.loggerService.log(`[updateRoles] User roles updated successfully for ID ${id}`);
+			this.loggerService.log(`[ updateRoles ] User roles updated successfully for ID ${id}`);
 			this.ok(res, userRoles);
 		}
 	}
