@@ -3,10 +3,13 @@ import { TYPES } from '../types';
 import { PgPoolService } from '../database/pg-pool.service';
 import { RolesRepositoryInterface } from './roles.repository.interface';
 import { TypesRoles, UserToRolesInterface } from './role.model';
+import { RolesServiceInterface } from './roles.service.interface';
 
 @injectable()
 export class RolesRepository implements RolesRepositoryInterface {
-	constructor(@inject(TYPES.DatabaseService) private databaseService: PgPoolService) {}
+	constructor(
+		@inject(TYPES.RolesService) private rolesService : RolesServiceInterface,
+		@inject(TYPES.DatabaseService) private databaseService: PgPoolService) {}
 
 	async findByUserId(userId: number): Promise<UserToRolesInterface | null> {
 		const query = 'SELECT * FROM "user".user_roles WHERE user_id = $1;';
@@ -26,7 +29,7 @@ export class RolesRepository implements RolesRepositoryInterface {
 
 	async create(userId: number, newRoles: TypesRoles[]): Promise<void> {
 		for (const newRole of newRoles) {
-			await this.databaseService.query(
+			const res = await this.databaseService.query(
 				'INSERT INTO "user".user_roles (user_id, role_value) VALUES ($1, $2)',
 				[userId, newRole],
 			);

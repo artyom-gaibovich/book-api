@@ -52,7 +52,6 @@ export class UserService implements UsersServiceInterface {
 	}
 
 	async getUserInfo(username: string): Promise<UserModel | null> {
-		console.log(username);
 		const result = await this.usersRepository.find(username);
 		if (!result) {
 			return null;

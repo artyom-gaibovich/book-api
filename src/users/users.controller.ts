@@ -8,10 +8,7 @@ import 'reflect-metadata';
 import { UsersControllerInterface } from './users.controller.interface';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
-import {
-	ValidateMiddleware,
-	ValidateParamIdIsNumberMiddleware,
-} from '../common/validate.middleware';
+import { ValidateMiddleware, ValidateParamIdIsNumberMiddleware } from '../common/validate.middleware';
 import { sign } from 'jsonwebtoken';
 import { ConfigServiceInterface } from '../config/config.service.interface';
 import { UsersServiceInterface } from './users.service.interface';
@@ -19,6 +16,9 @@ import { AuthAdminGuard, AuthGuard } from '../common/auth.guard';
 import { UpdateRolesDto } from './dto/update-roles.dto';
 import { TypesRoles } from '../roles/role.model';
 import { UserModel } from './user.model';
+import { ErrorCodes } from '../constnats/error.constants';
+import { SuccessCodes } from '../constnats/success.constants';
+import { RolesServiceInterface } from '../roles/roles.service.interface';
 
 @injectable()
 export class UserController extends BaseController implements UsersControllerInterface {
@@ -26,6 +26,7 @@ export class UserController extends BaseController implements UsersControllerInt
 		@inject(TYPES.Logger) private loggerService: LoggerInterface,
 		@inject(TYPES.UserService) private userService: UsersServiceInterface,
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
+		@inject(TYPES.RolesService) private rolesService: RolesServiceInterface,
 	) {
 		super(loggerService, 'users');
 		this.bindRoutes([
@@ -48,7 +49,7 @@ export class UserController extends BaseController implements UsersControllerInt
 				middlewares: [
 					new ValidateParamIdIsNumberMiddleware('id'),
 					new ValidateMiddleware(UpdateRolesDto),
-					new AuthAdminGuard(),
+					new AuthAdminGuard(this.rolesService),
 				],
 			},
 			{
@@ -69,13 +70,13 @@ export class UserController extends BaseController implements UsersControllerInt
 		const result = await this.userService.validateUser(req.body);
 		if (!result) {
 			this.loggerService.log('[login] User not found');
-			return next(new HTTPError(401, 'user not found', 'login'));
+			return next(new HTTPError(ErrorCodes.NotFound, 'user not found', 'login'));
 		}
 		const user = (await this.userService.getUserInfo(req.body.username)) as UserModel;
 		const userRoles = (await this.userService.findRoles(user.id)) as TypesRoles[];
 		const jwt = await this.signJWT(userRoles, req.body.username, this.configService.get('SECRET'));
 		this.loggerService.log('[login] User successfully logged in');
-		this.ok(res, { jwt });
+		this.send(res, SuccessCodes.Created, { jwt });
 	}
 
 	async register(
@@ -87,10 +88,10 @@ export class UserController extends BaseController implements UsersControllerInt
 		const user = await this.userService.createUser(body);
 		if (!user) {
 			this.loggerService.log('[ register ] User already exists');
-			return next(new HTTPError(409, 'User is already exists', 'register'));
+			return next(new HTTPError(ErrorCodes.Conflict, 'User is already exists', 'register'));
 		}
 		this.loggerService.log(`[ register ] User registered successfully with ID ${user.id}`);
-		this.send(res, 201, {
+		this.send(res, SuccessCodes.Created, {
 			username: user.username,
 			email: user.email,
 			id: user.id,
@@ -102,15 +103,22 @@ export class UserController extends BaseController implements UsersControllerInt
 		res: Response,
 		_: NextFunction,
 	): Promise<void> {
-		this.loggerService.log(`[ info ] Fetching info for user ${username}`);
 		const userInfo = await this.userService.getUserInfo(username);
-		this.loggerService.log(`[ info ] User info retrieved for ${username}`);
-		this.ok(res, {
-			username: userInfo?.username,
-			email: userInfo?.email,
-			id: userInfo?.id,
-			roles: roles,
-		});
+		if (!userInfo) {
+			this.loggerService.log(`[ info ] User with ${username} not found`);
+			this.send(res, ErrorCodes.NotFound, {
+				status: ErrorCodes.NotFound,
+				message: `User with id ${username} not found`,
+			});
+		} else {
+			this.loggerService.log(`[ info ] User info retrieved for ${username}`);
+			this.ok(res, {
+				username: userInfo?.username,
+				email: userInfo?.email,
+				id: userInfo?.id,
+				roles: roles,
+			});
+		}
 	}
 
 	async updateRoles(
@@ -126,13 +134,13 @@ export class UserController extends BaseController implements UsersControllerInt
 		const userRoles = await this.userService.updateRoles(id, transformRoles);
 		if (!userRoles) {
 			this.loggerService.log(`[ updateRoles ] User with ID ${id} not found`);
-			this.send(res, 404, {
-				status: 404,
-				message: 'User not found',
+			this.send(res, ErrorCodes.NotFound, {
+				status: ErrorCodes.NotFound,
+				message: `User with id ${id} not found`,
 			});
 		} else {
 			this.loggerService.log(`[ updateRoles ] User roles updated successfully for ID ${id}`);
-			this.ok(res, userRoles);
+			this.send(res, SuccessCodes.Created, userRoles);
 		}
 	}
 

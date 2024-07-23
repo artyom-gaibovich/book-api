@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ClassConstructor, plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { ObjectId } from 'mongodb';
+import { ErrorCodes } from '../constnats/error.constants';
 
 export class ValidateMiddleware implements MiddlewareInterface {
 	constructor(private classToValidate: ClassConstructor<object>) {}
@@ -11,7 +12,7 @@ export class ValidateMiddleware implements MiddlewareInterface {
 		const instance = plainToClass(this.classToValidate, body);
 		validate(instance).then((errors) => {
 			if (errors.length > 0) {
-				res.status(422).send(errors);
+				res.status(ErrorCodes.FailedDependency).send(errors);
 			} else {
 				next();
 			}
@@ -25,7 +26,9 @@ export class ValidateParamIdIsMongoStringMiddleware implements MiddlewareInterfa
 	execute(req: Request, res: Response, next: NextFunction): void {
 		const paramValue = req.params[this.paramName];
 		if (!ObjectId.isValid(paramValue)) {
-			res.status(400).send({ err: 'Invalid ID format. ID should be a Mongo String' });
+			res
+				.status(ErrorCodes.BadRequest)
+				.send({ err: 'Invalid ID format. ID should be a Mongo String' });
 		} else {
 			next();
 		}
@@ -38,7 +41,7 @@ export class ValidateParamIdIsNumberMiddleware implements MiddlewareInterface {
 	execute(req: Request, res: Response, next: NextFunction): void {
 		const paramValue = req.params[this.paramName];
 		if (isNaN(Number(paramValue))) {
-			res.status(400).send({ err: 'Invalid ID format. ID shout be a Number.' });
+			res.status(ErrorCodes.BadRequest).send({ err: 'Invalid ID format. ID shout be a Number.' });
 		} else {
 			next();
 		}
