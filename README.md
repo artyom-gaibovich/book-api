@@ -10,6 +10,10 @@
 - npm run dev (dev.)
 ----------------------------
 
+Use this JWT token,for simply testing because he has role admin
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6W3sidXNlcl9pZCI6Miwicm9sZV92YWx1ZSI6IkFETUlOIn1dLCJlbWFpbCI6ImFzZGFzZGFzQG1haWwucnUiLCJpYXQiOjE3MjE1MTE5MTh9.q_Ccw-Z-3enwqRudiRp45AFeR5IZyCjAfQUSc_I2TEQ
+
+
 
 ## API Documentation
 

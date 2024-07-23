@@ -32,7 +32,6 @@ export class UserService implements UsersServiceInterface {
 
 	async validateUser({ username, password }: UserLoginDto): Promise<boolean> {
 		const existedUser = await this.usersRepository.find(username);
-		console.log(existedUser)
 		if (!existedUser) {
 			return false;
 		}

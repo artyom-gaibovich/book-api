@@ -8,7 +8,10 @@ import 'reflect-metadata';
 import { UsersControllerInterface } from './users.controller.interface';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
-import { ValidateMiddleware, ValidateParamIdIsNumberMiddleware } from '../common/validate.middleware';
+import {
+	ValidateMiddleware,
+	ValidateParamIdIsNumberMiddleware,
+} from '../common/validate.middleware';
 import { sign } from 'jsonwebtoken';
 import { ConfigServiceInterface } from '../config/config.service.interface';
 import { UsersServiceInterface } from './users.service.interface';
@@ -42,7 +45,11 @@ export class UserController extends BaseController implements UsersControllerInt
 				path: '/:id/role',
 				method: 'put',
 				func: this.updateRoles,
-				middlewares: [new ValidateParamIdIsNumberMiddleware('id'), new ValidateMiddleware(UpdateRolesDto), new AuthAdminGuard()],
+				middlewares: [
+					new ValidateParamIdIsNumberMiddleware('id'),
+					new ValidateMiddleware(UpdateRolesDto),
+					new AuthAdminGuard(),
+				],
 			},
 			{
 				path: '/me',
@@ -60,12 +67,9 @@ export class UserController extends BaseController implements UsersControllerInt
 	): Promise<void> {
 		const result = await this.userService.validateUser(req.body);
 		if (!result) {
-			return next(new HTTPError(401, 'error authorization', 'login'));
+			return next(new HTTPError(401, 'user not found', 'login'));
 		}
-
 		const user = (await this.userService.getUserInfo(req.body.username)) as UserModel;
-
-
 		const userRoles = (await this.userService.findRoles(user.id)) as TypesRoles[];
 		const jwt = await this.signJWT(userRoles, req.body.username, this.configService.get('SECRET'));
 		this.ok(res, { jwt });
@@ -89,7 +93,7 @@ export class UserController extends BaseController implements UsersControllerInt
 	}
 
 	async updateRoles(
-		req: Request<{id : number}, {}, UpdateRolesDto>,
+		req: Request<{ id: number }, {}, UpdateRolesDto>,
 		res: Response,
 		_: NextFunction,
 	): Promise<void> {
@@ -98,11 +102,10 @@ export class UserController extends BaseController implements UsersControllerInt
 		const userRoles = await this.userService.updateRoles(id, transformRoles);
 		if (!userRoles) {
 			this.send(res, 404, {
-				status : 404,
-				message : "User not found"}
-			)
-		}
-		else {
+				status: 404,
+				message: 'User not found',
+			});
+		} else {
 			this.ok(res, userRoles);
 		}
 	}

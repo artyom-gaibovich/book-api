@@ -52,8 +52,8 @@ export class App {
 		this.useExceptionFilters();
 		this.server = this.app.listen(this.port);
 		this.logger.log(`Server start on http://localhost:${this.port}`);
-		await this.mongodb.connect()
-		await this.database.connect()
+		await this.mongodb.connect();
+		await this.database.connect();
 	}
 
 	public close(): void {

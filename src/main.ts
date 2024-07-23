@@ -35,11 +35,9 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<MongoService>(TYPES.MongoService).to(MongoService);
 
 	bind<UsersRepositoryInterface>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
-	bind<UsersControllerInterface>(TYPES.UserController).to(UserController);
+	bind<UserController>(TYPES.UserController).to(UserController);
 	bind<UsersServiceInterface>(TYPES.UserService).to(UserService);
 
-
-	// TODO Don't forget about indexes
 	bind<ConfigServiceInterface>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 
 	bind<BookRepository>(TYPES.BookRepository).to(BookRepository).inSingletonScope();
