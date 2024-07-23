@@ -27,7 +27,7 @@ export class UserController extends BaseController implements UsersControllerInt
 		@inject(TYPES.UserService) private userService: UsersServiceInterface,
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 	) {
-		super(loggerService);
+		super(loggerService, 'users');
 		this.bindRoutes([
 			{
 				path: '/register',
@@ -65,13 +65,16 @@ export class UserController extends BaseController implements UsersControllerInt
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
+		this.loggerService.log('[login] Attempting to login user');
 		const result = await this.userService.validateUser(req.body);
 		if (!result) {
+			this.loggerService.log('[login] User not found');
 			return next(new HTTPError(401, 'user not found', 'login'));
 		}
 		const user = (await this.userService.getUserInfo(req.body.username)) as UserModel;
 		const userRoles = (await this.userService.findRoles(user.id)) as TypesRoles[];
 		const jwt = await this.signJWT(userRoles, req.body.username, this.configService.get('SECRET'));
+		this.loggerService.log('[login] User successfully logged in');
 		this.ok(res, { jwt });
 	}
 
@@ -80,16 +83,34 @@ export class UserController extends BaseController implements UsersControllerInt
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
-		const result = await this.userService.createUser(body);
-		if (!result) {
-			return next(new HTTPError(422, 'User is already exists'));
+		this.loggerService.log('[ register ] Attempting to register new user');
+		const user = await this.userService.createUser(body);
+		if (!user) {
+			this.loggerService.log('[ register ] User already exists');
+			return next(new HTTPError(409, 'User is already exists', 'register'));
 		}
-		this.ok(res, { email: result.email, id: result.id });
+		this.loggerService.log(`[ register ] User registered successfully with ID ${user.id}`);
+		this.send(res, 201, {
+			username: user.username,
+			email: user.email,
+			id: user.id,
+		});
 	}
 
-	async info({ user, roles }: Request<{}, {}, {}>, res: Response, _: NextFunction): Promise<void> {
-		const userInfo = await this.userService.getUserInfo(user);
-		this.ok(res, { email: userInfo?.email, id: userInfo?.id, roles: roles });
+	async info(
+		{ username, roles }: Request<{}, {}, {}>,
+		res: Response,
+		_: NextFunction,
+	): Promise<void> {
+		this.loggerService.log(`[ info ] Fetching info for user ${username}`);
+		const userInfo = await this.userService.getUserInfo(username);
+		this.loggerService.log(`[ info ] User info retrieved for ${username}`);
+		this.ok(res, {
+			username: userInfo?.username,
+			email: userInfo?.email,
+			id: userInfo?.id,
+			roles: roles,
+		});
 	}
 
 	async updateRoles(
@@ -97,25 +118,30 @@ export class UserController extends BaseController implements UsersControllerInt
 		res: Response,
 		_: NextFunction,
 	): Promise<void> {
+		this.loggerService.log(
+			`[ updateRoles ] Attempting to update roles for user ID ${req.params.id}`,
+		);
 		const { id } = req.params;
 		const transformRoles = Array.from<TypesRoles>(new Set(req.body.roles));
 		const userRoles = await this.userService.updateRoles(id, transformRoles);
 		if (!userRoles) {
+			this.loggerService.log(`[ updateRoles ] User with ID ${id} not found`);
 			this.send(res, 404, {
 				status: 404,
 				message: 'User not found',
 			});
 		} else {
+			this.loggerService.log(`[ updateRoles ] User roles updated successfully for ID ${id}`);
 			this.ok(res, userRoles);
 		}
 	}
 
-	private signJWT(roles: TypesRoles[], email: string, secret: string): Promise<string> {
+	private signJWT(roles: TypesRoles[], username: string, secret: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			sign(
 				{
 					roles: roles,
-					email,
+					username,
 					iat: Math.floor(Date.now() / 1000),
 				},
 				secret,

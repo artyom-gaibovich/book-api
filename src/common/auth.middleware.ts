@@ -1,46 +1,31 @@
-import { MiddlewareInterface } from './middleware.interface';
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
-import { TypesRoles } from '../roles/role.types';
+import { injectable } from 'inversify';
 
-export class AuthMiddleware implements MiddlewareInterface {
-	constructor(private secret: string) {}
+@injectable()
+export class AuthMiddleware {
+	constructor(private secret: string, private ignoreJWTRoutes: string[]) {}
 
 	execute(req: Request, res: Response, next: NextFunction): void {
-		if (req.headers.authorization) {
-			verify(req.headers.authorization.split(' ')[1], this.secret, (err, payload) => {
-				if (err) {
-					next();
-				} else if (payload) {
-					req.user = payload.email;
-					next();
-				}
-			});
-		} else {
-			next();
+		if (this.ignoreJWTRoutes.includes(req.originalUrl)) {
+			return next();
 		}
-	}
-}
-
-export class AuthAdminMiddleware implements MiddlewareInterface {
-	constructor(private secret: string) {}
-
-	execute(req: Request, res: Response, next: NextFunction): void {
 		if (req.headers.authorization) {
 			verify(req.headers.authorization.split(' ')[1], this.secret, (err, payload) => {
 				if (err) {
-					next();
-				} else if (payload) {
-					req.user = payload.email;
+					return next();
+				}
+				if (payload) {
+					req.username = payload.username;
 					req.roles = payload.roles.map((role: any) => role.role_value);
 					if (!req.roles) {
-						res.status(400).send({ err: 'Invalid JWT TOKEN. Dont set roles' });
+						return res.status(400).send({ err: 'Invalid JWT TOKEN. Dont set roles' });
 					}
-					if (!req.user) {
-						res.status(400).send({ err: 'Invalid JWT TOKEN. Dont set email' });
+					if (!req.username) {
+						return res.status(400).send({ err: 'Invalid JWT TOKEN. Dont set username' });
 					}
-					if (req.user || req.roles) {
-						next();
+					if (req.username || req.roles) {
+						return next();
 					}
 				}
 			});

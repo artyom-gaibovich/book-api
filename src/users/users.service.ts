@@ -10,7 +10,6 @@ import { RolesRepositoryInterface } from '../roles/roles.repository.interface';
 import { TypesRoles } from '../roles/role.types';
 import { ConfigServiceInterface } from '../config/config.service.interface';
 import { UserToRolesInterface } from '../roles/user-to-roles.interface';
-import { UsersRepository } from './users.repository';
 
 @injectable()
 export class UserService implements UsersServiceInterface {
@@ -38,7 +37,7 @@ export class UserService implements UsersServiceInterface {
 		if (!existedUser) {
 			return false;
 		}
-		const newUser = new User(existedUser.email, existedUser.name, existedUser.password);
+		const newUser = new User(existedUser.email, existedUser.username, existedUser.password);
 		return newUser.comparePassword(password);
 	}
 
@@ -51,7 +50,12 @@ export class UserService implements UsersServiceInterface {
 	}
 
 	async getUserInfo(username: string): Promise<UserModel | null> {
-		return this.usersRepository.find(username);
+		console.log(username);
+		const result = await this.usersRepository.find(username);
+		if (!result) {
+			return null;
+		}
+		return result;
 	}
 
 	async updateRoles(userId: number, newRoles: TypesRoles[]): Promise<UserToRolesInterface | null> {

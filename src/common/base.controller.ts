@@ -10,7 +10,7 @@ import 'reflect-metadata';
 export abstract class BaseController {
 	private readonly _router: Router;
 
-	constructor(private logger: LoggerInterface) {
+	constructor(private logger: LoggerInterface, private resource: string) {
 		this._router = Router();
 	}
 
@@ -27,13 +27,13 @@ export abstract class BaseController {
 		return this.send<T>(res, 200, message);
 	}
 
-	public created(res: Response): ExpressReturnType {
+	public created<T>(res: Response): ExpressReturnType {
 		return res.sendStatus(201);
 	}
 
 	protected bindRoutes(routes: IControllerRoute[]): void {
 		for (const route of routes) {
-			this.logger.log(`[${route.method}] ${route.path}`);
+			this.logger.log(`[ ${route.method.toUpperCase()} ] /${this.resource}${route.path}`);
 			const middleware = route.middlewares?.map((m) => m.execute.bind(m));
 			const handler = route.func.bind(this);
 			const pipeline = middleware ? [...middleware, handler] : handler;

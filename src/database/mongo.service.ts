@@ -19,10 +19,10 @@ export class MongoService {
 	async connect(): Promise<void> {
 		try {
 			await this.client.connect();
-			this.logger.log('[MongoService] Successfully connected to MongoDB');
+			this.logger.log('[ MongoService ] Successfully connected to MongoDB');
 		} catch (e) {
 			if (e instanceof Error) {
-				this.logger.error('[MongoService] Error connecting to MongoDB: ' + e.message);
+				this.logger.error('[ MongoService ] Error connecting to MongoDB: ' + e.message);
 			}
 		}
 	}
