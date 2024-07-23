@@ -11,8 +11,10 @@
 ----------------------------
 
 Use this JWT token,for creating user and then you can change roles.
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6W3sidXNlcl9pZCI6Miwicm9sZV92YWx1ZSI6IkFETUlOIn1dLCJlbWFpbCI6ImFzZGFzZGFzQG1haWwucnUiLCJpYXQiOjE3MjE1MTE5MTh9.q_Ccw-Z-3enwqRudiRp45AFeR5IZyCjAfQUSc_I2TEQ
 
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6W3sidXNlcl9pZCI6MjMsInJvbGVfdmFsdWUiOiJBRE1JTiJ9XSwidXNlcm5hbWUiOiJnZ2ZkZ2RnZCIsImlhdCI6MTcyMTY5ODMzOX0.Dk8oW_E1ZhxqQCxSM3osarusXjNJ1B8t3Iz0QFLYUsU"
+
+- Warning !
 When you will make migrations, use  PG_HOST=postgresql
 
 ## API Documentation

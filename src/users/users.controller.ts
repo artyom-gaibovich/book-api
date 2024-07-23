@@ -82,14 +82,23 @@ export class UserController extends BaseController implements UsersControllerInt
 	): Promise<void> {
 		const result = await this.userService.createUser(body);
 		if (!result) {
-			return next(new HTTPError(422, 'User is already exists'));
+			return next(new HTTPError(409, 'User is already exists'));
 		}
-		this.ok(res, { email: result.email, id: result.id });
+		this.send(res, 201, { email: result.email, id: result.id });
 	}
 
-	async info({ user, roles }: Request<{}, {}, {}>, res: Response, _: NextFunction): Promise<void> {
-		const userInfo = await this.userService.getUserInfo(user);
-		this.ok(res, { email: userInfo?.email, id: userInfo?.id, roles: roles });
+	async info(
+		{ username, roles }: Request<{}, {}, {}>,
+		res: Response,
+		_: NextFunction,
+	): Promise<void> {
+		const userInfo = await this.userService.getUserInfo(username);
+		this.ok(res, {
+			username: userInfo?.username,
+			mail: userInfo?.email,
+			id: userInfo?.id,
+			roles: roles,
+		});
 	}
 
 	async updateRoles(
@@ -110,12 +119,12 @@ export class UserController extends BaseController implements UsersControllerInt
 		}
 	}
 
-	private signJWT(roles: TypesRoles[], email: string, secret: string): Promise<string> {
+	private signJWT(roles: TypesRoles[], username: string, secret: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			sign(
 				{
 					roles: roles,
-					email,
+					username,
 					iat: Math.floor(Date.now() / 1000),
 				},
 				secret,

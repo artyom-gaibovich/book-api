@@ -27,7 +27,7 @@ export abstract class BaseController {
 		return this.send<T>(res, 200, message);
 	}
 
-	public created(res: Response): ExpressReturnType {
+	public created<T>(res: Response): ExpressReturnType {
 		return res.sendStatus(201);
 	}
 
