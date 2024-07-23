@@ -113,7 +113,7 @@ Response:
   "_id": "669f25c9d130d3d3db3cb8e1",
   "title": "book-api",
   "author": "Artyom_gaibovich",
-  "publicationDate": "31-14-15",
+  "publicationDate": "2024-07-23T14:30:00+03:00",
   "genres": [
     "backend",
     "frontend",
@@ -136,7 +136,7 @@ Request:
 {
   "title": "book-api",
   "author": "Artyom_gaibovich",
-  "publicationDate": "31-14-15",
+  "publicationDate": "2024-07-23T14:30:00+03:00",
   "genres": [
     "Backend",
     "Frontend",
@@ -150,7 +150,7 @@ Response:
   "_id": "669f25c9d130d3d3db3cb8e1",
   "title": "book-api",
   "author": "Artyom_gaibovich",
-  "publicationDate": "31-14-15",
+  "publicationDate": "2024-07-23T14:30:00+03:00",
   "genres": [
     "Backend",
     "Frontend",
