@@ -3,5 +3,5 @@ import { UserModel } from './user.model';
 
 export interface UsersRepositoryInterface {
 	create: (user: User) => Promise<UserModel>;
-	find: (username: string) => Promise<UserModel | null>;
+	find: (username: string, email?: string) => Promise<UserModel | null>;
 }

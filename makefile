@@ -27,8 +27,8 @@ migration-up:
 	liquibase/liquibase:4.25-alpine \
 	--changeLogFile=changelog-root.yml \
 	--url=${DATABASE_DSN} \
-	--username=${DB_USER} \
-	--password=${DB_PASSWORD} \
+	--username=${PG_USER} \
+	--password=${PG_PASSWORD} \
 	update
 
 migration-gen-table:

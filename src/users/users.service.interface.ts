@@ -5,9 +5,13 @@ import { TypesRoles } from '../roles/role.types';
 import { UserToRolesInterface } from '../roles/user-to-roles.interface';
 
 export interface UsersServiceInterface {
-	findRoles: (userId: number) => Promise<TypesRoles[] | null>;
-	createUser: (dto: UserRegisterDto) => Promise<UserModel | null>;
-	validateUser: (dto: UserLoginDto) => Promise<boolean>;
-	getUserInfo: (username: string) => Promise<UserModel | null>;
-	updateRoles: (userId: number, newRoles: TypesRoles[]) => Promise<UserToRolesInterface | null>;
+	findRoles(userId: number): Promise<TypesRoles[] | null>;
+
+	createUser(dto: UserRegisterDto): Promise<UserModel | null>;
+
+	validateUser(dto: UserLoginDto): Promise<boolean>;
+
+	getUserInfo(username: string): Promise<UserModel | null>;
+
+	updateRoles(userId: number, newRoles: TypesRoles[]): Promise<UserToRolesInterface | null>;
 }
