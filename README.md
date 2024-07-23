@@ -10,10 +10,10 @@
 - npm run dev (dev.)
 ----------------------------
 
-Use this JWT token,for creating user and then you can change roles.
-
+Use this JWT token,for creating user and then you can change roles:
+```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6W3sidXNlcl9pZCI6MjMsInJvbGVfdmFsdWUiOiJBRE1JTiJ9XSwidXNlcm5hbWUiOiJnZ2ZkZ2RnZCIsImlhdCI6MTcyMTY5ODMzOX0.Dk8oW_E1ZhxqQCxSM3osarusXjNJ1B8t3Iz0QFLYUsU
-
+```
 When you will make migrations, use  PG_HOST=postgresql
 
 ## API Documentation
