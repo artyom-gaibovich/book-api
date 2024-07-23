@@ -8,9 +8,10 @@ import 'reflect-metadata';
 import { ConfigServiceInterface } from './config/config.service.interface';
 import { ExceptionFilterInterface } from './errors/exception.filter.interface';
 import { UserController } from './users/users.controller';
-import { AuthAdminMiddleware } from './common/auth.middleware';
+import { AuthMiddleware } from './common/auth.middleware';
 import { PgPoolService } from './database/pg-pool.service';
 import { MongoService } from './database/mongo.service';
+import { BookController } from './books/book.controller';
 
 @injectable()
 export class App {
@@ -23,17 +24,20 @@ export class App {
 		@inject(TYPES.DatabaseService) private database: PgPoolService,
 		@inject(TYPES.MongoService) private mongodb: MongoService,
 		@inject(TYPES.UserController) private userController: UserController,
-		@inject(TYPES.BookController) private bookController: UserController,
+		@inject(TYPES.BookController) private bookController: BookController,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: ExceptionFilterInterface,
 		@inject(TYPES.ConfigService) private configService: ConfigServiceInterface,
 	) {
 		this.app = express();
-		this.port = 8000;
+		this.port = Number(this.configService.get('APP_PORT'));
 	}
 
 	useMiddleware(): void {
 		this.app.use(json());
-		const authMiddleware = new AuthAdminMiddleware(this.configService.get('SECRET'));
+		const authMiddleware = new AuthMiddleware(this.configService.get('SECRET'), [
+			'/users/login',
+			'/users/register',
+		]);
 		this.app.use(authMiddleware.execute.bind(authMiddleware));
 	}
 

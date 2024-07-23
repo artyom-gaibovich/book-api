@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 export class AuthGuard implements MiddlewareInterface {
 	execute(req: Request, res: Response, next: NextFunction): void {
-		if (req.username) {
+		if (req.roles && req.username) {
 			return next();
 		}
 		res.status(401).send({ error: 'You are not authorized' });

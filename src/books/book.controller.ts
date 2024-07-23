@@ -3,12 +3,14 @@ import { BaseController } from '../common/base.controller';
 import { LoggerInterface } from '../logger/logger.interface';
 import { TYPES } from '../types';
 import 'reflect-metadata';
-import { ConfigServiceInterface } from '../config/config.service.interface';
 import { BookControllerInterface } from './book.controller.interface';
 import { NextFunction, Request, Response } from 'express';
 import { CreateBookDto } from './dto/create-book.dto';
 import { BookService } from './book.service';
-import { ValidateMiddleware, ValidateParamIdIsMongoStringMiddleware } from '../common/validate.middleware';
+import {
+	ValidateMiddleware,
+	ValidateParamIdIsMongoStringMiddleware,
+} from '../common/validate.middleware';
 import { AuthAdminGuard } from '../common/auth.guard';
 import { UpdateBookDto } from './dto/update-book.dto';
 
@@ -18,7 +20,7 @@ export class BookController extends BaseController implements BookControllerInte
 		@inject(TYPES.Logger) private loggerService: LoggerInterface,
 		@inject(TYPES.BookService) private bookService: BookService,
 	) {
-		super(loggerService);
+		super(loggerService, 'books');
 		this.bindRoutes([
 			{
 				path: '',
@@ -77,7 +79,11 @@ export class BookController extends BaseController implements BookControllerInte
 		this.ok(res, { books });
 		this.loggerService.log(`Books retrieved: ${books?.length ? books?.length : 0} books found`);
 	}
-	async findById(req: Request<{ id : string }, {}, {}>, res: Response, _: NextFunction): Promise<void> {
+	async findById(
+		req: Request<{ id: string }, {}, {}>,
+		res: Response,
+		_: NextFunction,
+	): Promise<void> {
 		const { id } = req.params;
 		const result = await this.bookService.getBookById(id);
 		this.ok(res, result);
