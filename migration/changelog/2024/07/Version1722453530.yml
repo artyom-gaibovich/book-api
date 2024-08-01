@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: version-1722453530
+      author: your_name
+      changes:
+        - createTable:
+            tableName: table-name
+            columns:
+            - column:
+               name: id
+               type: int
+               autoIncrement: true
+               constraints:
+                 primaryKey: true
+            schemaName: schema-name

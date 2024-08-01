@@ -69,3 +69,15 @@ async function bootstrap(): Promise<IBootstrapReturn> {
 }
 
 export const boot = bootstrap();
+
+// TODO features/task16_change_logger_color
+
+// Create a new branch
+// git branch [features | bug-fixes]/task[number]_[description of task]
+// git checkout [features | bug-fixes]/task[number]_[description of task]
+
+// git checkout -b [features | bug-fixes]/task[number]_[description of task]
+
+// When we completed the task, we should save it.
+
+// git commit -m "[description]"

@@ -11,3 +11,5 @@ databaseChangeLog:
       file: /2024/07/Version1721684737.yml
   - include:
       file: /2024/07/Version1721685279.yml
+  - include:
+      file: /2024/07/Version1722453530.yml

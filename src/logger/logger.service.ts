@@ -13,6 +13,15 @@ export class LoggerService implements LoggerInterface {
 			displayLoggerName: false,
 			displayFilePath: 'hidden',
 			displayFunctionName: false,
+			logLevelsColors: {
+				0: 'black',
+				1: 'green',
+				2: 'yellow',
+				3: 'yellowBright',
+				4: 'yellowBright',
+				5: 'red',
+				6: 'inverse',
+			},
 		});
 	}
 
@@ -21,7 +30,6 @@ export class LoggerService implements LoggerInterface {
 	}
 
 	error(...args: unknown[]): void {
-		// отправка в sentry / rollbar
 		this.logger.error(...args);
 	}
 
